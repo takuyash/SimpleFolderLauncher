@@ -4,6 +4,9 @@ using System.Windows.Forms;
 
 namespace StylishLauncherINI
 {
+    /// <summary>
+    /// 設定画面
+    /// </summary>
     public class SettingsForm : Form
     {
         private TextBox txtPath;
@@ -63,9 +66,17 @@ namespace StylishLauncherINI
         {
             string folder = txtPath.Text.Trim();
 
+            // 空チェック
             if (string.IsNullOrEmpty(folder))
             {
                 MessageBox.Show("パスを入力してください。");
+                return;
+            }
+
+            // 存在チェック
+            if (!Directory.Exists(folder))
+            {
+                MessageBox.Show("指定されたフォルダは存在しません。");
                 return;
             }
 
