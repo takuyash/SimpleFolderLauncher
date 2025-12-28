@@ -34,7 +34,7 @@ namespace StylishLauncherINI
         private ContextMenuStrip nodeContextMenu;
         private List<TreeNode> flatNodeList = new List<TreeNode>();
 
-        // ★ タスクトレイアイコン
+        // タスクトレイ
         private NotifyIcon trayIcon;
         private ContextMenuStrip trayMenu;
 
@@ -47,8 +47,11 @@ namespace StylishLauncherINI
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
 
-            // ================================  
-            // タスクトレイアイコン  
+            // ★ 追加：フォームがキー入力を先に受け取る
+            this.KeyPreview = true;
+
+            // ================================
+            // タスクトレイ
             // ================================
             trayMenu = new ContextMenuStrip();
 
@@ -63,8 +66,6 @@ namespace StylishLauncherINI
                 string iniPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
                 var settings = new SettingsForm(iniPath);
                 settings.ShowDialog();
-
-                // 設定変更後に再読み込み
                 ReloadTree();
             });
 
@@ -74,18 +75,18 @@ namespace StylishLauncherINI
                 Application.Exit();
             });
 
-            trayIcon = new NotifyIcon();
-            trayIcon.Icon = SystemIcons.Application;
-            trayIcon.Visible = true;
-            trayIcon.Text = "Launcher";
-            trayIcon.ContextMenuStrip = trayMenu;
+            trayIcon = new NotifyIcon
+            {
+                Icon = SystemIcons.Application,
+                Visible = true,
+                Text = "Launcher",
+                ContextMenuStrip = trayMenu
+            };
 
             trayIcon.MouseUp += (s, e) =>
             {
                 if (e.Button == MouseButtons.Left)
-                {
                     trayMenu.Show(Cursor.Position);
-                }
             };
 
             // ================================
@@ -107,19 +108,48 @@ namespace StylishLauncherINI
 
             this.Controls.Add(fileTree);
 
-            // 右クリックメニュー
             nodeContextMenu = new ContextMenuStrip();
             var copyPathItem = new ToolStripMenuItem("パスをコピー");
             copyPathItem.Click += CopyPathItem_Click;
             nodeContextMenu.Items.Add(copyPathItem);
 
-            // 初回ロード
             ReloadTree();
         }
 
-        // ================================
-        // INI を読み込み、ツリーを再構築
-        // ================================
+        // Esc で LauncherForm を閉じる（Hide）
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                this.Hide();
+                e.Handled = true;
+                return;
+            }
+            base.OnKeyDown(e);
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // Enter / Esc の「つぅるーん」防止 & 全体ショートカット
+            if (keyData == Keys.Enter)
+            {
+                if (fileTree.SelectedNode != null)
+                {
+                    OpenFileOrFolder(fileTree.SelectedNode);
+                }
+                return true; // ★ Windowsに渡さない（音が鳴らない）
+            }
+
+            if (keyData == Keys.Escape)
+            {
+                this.Hide();
+                return true; // ★ 音防止
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+
         private void ReloadTree()
         {
             fileTree.Nodes.Clear();
@@ -129,14 +159,9 @@ namespace StylishLauncherINI
             var ini = IniHelper.ReadIni(iniPath);
             string rootPath = ini.ContainsKey("LauncherFolder") ? ini["LauncherFolder"] : "";
 
-            // --- ★ 修正ポイント：INI がない・空・フォルダなしでも落とさない ---
             if (string.IsNullOrWhiteSpace(rootPath) || !Directory.Exists(rootPath))
-            {
-                // 何も読み込まない（空表示）
                 return;
-            }
 
-            // 正常時のみ読み込み
             LoadFolder(rootPath, fileTree.Nodes);
             BuildFlatNodeList(fileTree.Nodes);
 
@@ -147,7 +172,6 @@ namespace StylishLauncherINI
             }
         }
 
-        // × で閉じても終了せずタスクトレイへ
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.UserClosing)
@@ -159,9 +183,6 @@ namespace StylishLauncherINI
             base.OnFormClosing(e);
         }
 
-        // ================================
-        // 0〜9、A〜Z ショートカット
-        // ================================
         private void BuildFlatNodeList(TreeNodeCollection nodes)
         {
             flatNodeList.Clear();
@@ -175,13 +196,9 @@ namespace StylishLauncherINI
                 if (File.Exists(node.Tag as string) || Directory.Exists(node.Tag as string))
                 {
                     string keyLabel;
-
-                    if (index < 10)
-                        keyLabel = $"{index}: ";
-                    else if (index < 36)
-                        keyLabel = $"{(char)('A' + index - 10)}: ";
-                    else
-                        keyLabel = "   ";
+                    if (index < 10) keyLabel = $"{index}: ";
+                    else if (index < 36) keyLabel = $"{(char)('A' + index - 10)}: ";
+                    else keyLabel = "   ";
 
                     node.Text = keyLabel + node.Text;
                     flatNodeList.Add(node);
@@ -194,9 +211,6 @@ namespace StylishLauncherINI
             return index;
         }
 
-        // ================================
-        // TreeView 操作
-        // ================================
         private void FileTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -254,8 +268,13 @@ namespace StylishLauncherINI
             if (e.Node.IsSelected)
                 e.Graphics.FillRectangle(Brushes.DarkCyan, e.Bounds);
 
-            TextRenderer.DrawText(e.Graphics, e.Node.Text, e.Node.TreeView.Font,
-                e.Bounds, Color.White, TextFormatFlags.VerticalCenter | TextFormatFlags.Left);
+            TextRenderer.DrawText(
+                e.Graphics,
+                e.Node.Text,
+                e.Node.TreeView.Font,
+                e.Bounds,
+                Color.White,
+                TextFormatFlags.VerticalCenter | TextFormatFlags.Left);
         }
 
         private void FileTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -265,7 +284,6 @@ namespace StylishLauncherINI
 
         private void FileTree_KeyDown(object sender, KeyEventArgs e)
         {
-            // 0〜9
             if (e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9)
             {
                 int index = e.KeyCode - Keys.D0;
@@ -275,7 +293,6 @@ namespace StylishLauncherINI
                 return;
             }
 
-            // A〜Z
             if (e.KeyCode >= Keys.A && e.KeyCode <= Keys.Z)
             {
                 int index = 10 + (e.KeyCode - Keys.A);
@@ -285,11 +302,7 @@ namespace StylishLauncherINI
                 return;
             }
 
-            if (e.KeyCode == Keys.Enter && fileTree.SelectedNode != null)
-            {
-                OpenFileOrFolder(fileTree.SelectedNode);
-                e.Handled = true;
-            }
+
         }
 
         private void OpenFileOrFolder(TreeNode node)
@@ -332,4 +345,6 @@ namespace StylishLauncherINI
             else node.Expand();
         }
     }
+
+
 }

@@ -9,6 +9,7 @@ namespace StylishLauncherINI
         // modifier keys
         private const int MOD_ALT = 0x0001;
         private const int MOD_CONTROL = 0x0002;
+        private const int MOD_SHIFT = 0x0004;
         private const int WM_HOTKEY = 0x0312;
         private const int HOTKEY_ID = 9000;
 
@@ -29,8 +30,9 @@ namespace StylishLauncherINI
 
             MessageWindow messageWindow = new MessageWindow();
 
-            // Ctrl + Alt + P
-            RegisterHotKey(messageWindow.Handle, HOTKEY_ID, MOD_CONTROL | MOD_ALT, (int)Keys.P);
+            // ホットキー起動
+            // Ctrl + Shift + I
+            RegisterHotKey(messageWindow.Handle, HOTKEY_ID, MOD_CONTROL | MOD_SHIFT, (int)Keys.I);
 
             messageWindow.HotKeyPressed += (s, e) =>
             {
