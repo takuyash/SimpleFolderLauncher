@@ -39,3 +39,8 @@ Windows 11 で「フォルダをタスクバーにピン留めできなくなっ
 
 4. Right-Click メニュー
 各項目を右クリックするとパスをコピーできます。
+
+## スクリーンショット
+
+### ランチャー画面
+![Launcher](screenshots/launcher.png)
