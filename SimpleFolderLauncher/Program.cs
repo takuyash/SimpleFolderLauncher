@@ -25,21 +25,23 @@ namespace StylishLauncherINI
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            LauncherForm launcher = new LauncherForm();
-            launcher.Hide(); // 初期は非表示
+            // 初期パスを読み込む
+            string iniPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
+            var ini = IniHelper.ReadIni(iniPath);
+            string rootPath = ini.ContainsKey("LauncherFolder") ? ini["LauncherFolder"] : "";
+
+            LauncherForm launcher = new LauncherForm(rootPath);
+            launcher.Hide(); // 初期非表示
 
             MessageWindow messageWindow = new MessageWindow();
 
-            // ホットキー起動
-            // Ctrl + Shift + I
+            // ホットキー登録
             RegisterHotKey(messageWindow.Handle, HOTKEY_ID, MOD_CONTROL | MOD_SHIFT, (int)Keys.I);
 
             messageWindow.HotKeyPressed += (s, e) =>
             {
                 if (launcher.Visible)
-                {
                     launcher.Hide();
-                }
                 else
                 {
                     launcher.Show();

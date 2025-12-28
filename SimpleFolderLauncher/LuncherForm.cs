@@ -28,6 +28,9 @@ namespace StylishLauncherINI
         }
     }
 
+    /// <summary>
+    /// ランチャー画面
+    /// </summary>
     public class LauncherForm : Form
     {
         private TreeView fileTree;
@@ -38,7 +41,11 @@ namespace StylishLauncherINI
         private NotifyIcon trayIcon;
         private ContextMenuStrip trayMenu;
 
-        public LauncherForm()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="initialPath"></param>
+        public LauncherForm(string initialPath = "")
         {
             this.Text = "SimpleFolderLauncher";
             this.Size = new Size(420, 550);
@@ -47,7 +54,6 @@ namespace StylishLauncherINI
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
 
-            // ★ 追加：フォームがキー入力を先に受け取る
             this.KeyPreview = true;
 
             // ================================
@@ -89,9 +95,8 @@ namespace StylishLauncherINI
                     trayMenu.Show(Cursor.Position);
             };
 
-            // ================================
+
             // TreeView
-            // ================================
             fileTree = new TreeView
             {
                 Dock = DockStyle.Fill,
@@ -113,10 +118,13 @@ namespace StylishLauncherINI
             copyPathItem.Click += CopyPathItem_Click;
             nodeContextMenu.Items.Add(copyPathItem);
 
-            ReloadTree();
+            ReloadTree(initialPath);
         }
 
-        // Esc で LauncherForm を閉じる（Hide）
+        /// <summary>
+        /// Esc で LauncherForm を閉じる（Hide）
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnKeyDown(KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
@@ -130,34 +138,40 @@ namespace StylishLauncherINI
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            // Enter / Esc の「つぅるーん」防止 & 全体ショートカット
+ 
             if (keyData == Keys.Enter)
             {
                 if (fileTree.SelectedNode != null)
                 {
                     OpenFileOrFolder(fileTree.SelectedNode);
                 }
-                return true; // ★ Windowsに渡さない（音が鳴らない）
+                return true;
             }
 
             if (keyData == Keys.Escape)
             {
                 this.Hide();
-                return true; // ★ 音防止
+                return true; 
             }
 
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-
-        private void ReloadTree()
+        /// <summary>
+        /// リロード処理
+        /// </summary>
+        /// <param name="rootPath"></param>
+        private void ReloadTree(string rootPath = "")
         {
             fileTree.Nodes.Clear();
             flatNodeList.Clear();
 
-            string iniPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
-            var ini = IniHelper.ReadIni(iniPath);
-            string rootPath = ini.ContainsKey("LauncherFolder") ? ini["LauncherFolder"] : "";
+            if (string.IsNullOrWhiteSpace(rootPath))
+            {
+                string iniPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
+                var ini = IniHelper.ReadIni(iniPath);
+                rootPath = ini.ContainsKey("LauncherFolder") ? ini["LauncherFolder"] : "";
+            }
 
             if (string.IsNullOrWhiteSpace(rootPath) || !Directory.Exists(rootPath))
                 return;
