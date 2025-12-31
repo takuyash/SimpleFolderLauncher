@@ -84,6 +84,7 @@ namespace StylishLauncherINI
 
             this.KeyPreview = true;
 
+            this.Icon = new Icon(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "icon.ico"));
 
             // ImageListの初期化
             iconList = new ImageList();
