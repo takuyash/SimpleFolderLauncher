@@ -223,7 +223,7 @@ namespace StylishLauncherINI
                 return;
 
             fileTree.BeginUpdate(); // 描画停止で高速化
-            LoadFolder(rootPath, fileTree.Nodes);
+            LoadFolder(rootPath, fileTree.Nodes, true); // 第3引数で再帰するか決める
             fileTree.EndUpdate();
 
             BuildFlatNodeList(fileTree.Nodes);
@@ -311,25 +311,32 @@ namespace StylishLauncherINI
             }
         }
 
-        private void LoadFolder(string path, TreeNodeCollection parentNodes)
+        /// <summary>
+        /// フォルダを再帰的に読み込む
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="parentNodes"></param>
+        /// <param name="recursive"></param>
+        private void LoadFolder(string path, TreeNodeCollection parentNodes, bool recursive = false)
         {
-            // ディレクトリ
             foreach (var dir in Directory.GetDirectories(path))
             {
-                // ファイル名を表示
-                var folderNode = new TreeNode(Path.GetFileName(dir))
-                {
-                    Tag = dir,
-                    ForeColor = Color.LightSkyBlue
-                };
-
-                // アイコンを設定する
+                var folderNode = new TreeNode(Path.GetFileName(dir)) { Tag = dir, ForeColor = Color.LightSkyBlue };
                 SetNodeIcon(folderNode, dir);
-
                 parentNodes.Add(folderNode);
-                LoadFolder(dir, folderNode.Nodes);
-            }
 
+                // recursive が true の場合のみ再帰する
+                if (recursive)
+                {
+                    try
+                    {
+                        LoadFolder(dir, folderNode.Nodes, false); // 子階層は再帰しない設定で呼ぶ
+                    }
+                    catch { 
+
+                    }
+                }
+            }
             // ファイル
             foreach (var file in Directory.GetFiles(path))
             {
