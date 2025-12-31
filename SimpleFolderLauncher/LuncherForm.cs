@@ -118,9 +118,9 @@ namespace StylishLauncherINI
 
             trayIcon = new NotifyIcon
             {
-                Icon = SystemIcons.Application,
+                Icon = new Icon(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "icon.ico")),
                 Visible = true,
-                Text = "Launcher",
+                Text = "SimpleFolderLauncher",
                 ContextMenuStrip = trayMenu
             };
 
