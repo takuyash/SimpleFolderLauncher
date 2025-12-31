@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace StylishLauncherINI
@@ -28,6 +29,32 @@ namespace StylishLauncherINI
         }
     }
 
+    // アイコン取得用のWin32 API定義
+    public static class NativeMethods
+    {
+        public const uint SHGFI_ICON = 0x100;
+        public const uint SHGFI_SMALLICON = 0x1;
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct SHFILEINFO
+        {
+            public IntPtr hIcon;
+            public IntPtr iIcon;
+            public uint dwAttributes;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+            public string szDisplayName;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
+            public string szTypeName;
+        };
+
+        [DllImport("shell32.dll")]
+        public static extern IntPtr SHGetFileInfo(string pszPath, uint dwFileAttributes, ref SHFILEINFO psfi, uint cbFileInfo, uint uFlags);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool DestroyIcon(IntPtr hIcon);
+    }
+
     /// <summary>
     /// ランチャー画面
     /// </summary>
@@ -36,13 +63,14 @@ namespace StylishLauncherINI
         private TreeView fileTree;
         private ContextMenuStrip nodeContextMenu;
         private List<TreeNode> flatNodeList = new List<TreeNode>();
+        private ImageList iconList; // アイコンリスト
 
         // タスクトレイ
         private NotifyIcon trayIcon;
         private ContextMenuStrip trayMenu;
 
         /// <summary>
-        /// 
+        /// ランチャーフォーム画面
         /// </summary>
         /// <param name="initialPath"></param>
         public LauncherForm(string initialPath = "")
@@ -55,6 +83,12 @@ namespace StylishLauncherINI
             this.MaximizeBox = false;
 
             this.KeyPreview = true;
+
+
+            // ImageListの初期化
+            iconList = new ImageList();
+            iconList.ColorDepth = ColorDepth.Depth32Bit;
+            iconList.ImageSize = new Size(16, 16); // アイコンサイズ
 
             // ================================
             // タスクトレイ
@@ -70,6 +104,7 @@ namespace StylishLauncherINI
             trayMenu.Items.Add("設定", null, (s, e) =>
             {
                 string iniPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
+     
                 var settings = new SettingsForm(iniPath);
                 settings.ShowDialog();
                 ReloadTree();
@@ -103,7 +138,10 @@ namespace StylishLauncherINI
                 DrawMode = TreeViewDrawMode.OwnerDrawText,
                 HideSelection = false,
                 BackColor = Color.FromArgb(30, 30, 30),
-                BorderStyle = BorderStyle.None
+                BorderStyle = BorderStyle.None,
+                ImageList = iconList, // ImageListを紐づけする
+                ShowLines = false,   
+                ShowPlusMinus = true
             };
 
             fileTree.DrawNode += FileTree_DrawNode;
@@ -136,9 +174,15 @@ namespace StylishLauncherINI
             base.OnKeyDown(e);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <param name="keyData"></param>
+        /// <returns></returns>
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
- 
+
             if (keyData == Keys.Enter)
             {
                 if (fileTree.SelectedNode != null)
@@ -151,7 +195,7 @@ namespace StylishLauncherINI
             if (keyData == Keys.Escape)
             {
                 this.Hide();
-                return true; 
+                return true;
             }
 
             return base.ProcessCmdKey(ref msg, keyData);
@@ -165,6 +209,7 @@ namespace StylishLauncherINI
         {
             fileTree.Nodes.Clear();
             flatNodeList.Clear();
+            iconList.Images.Clear(); // リロード時にアイコンキャッシュもクリア
 
             if (string.IsNullOrWhiteSpace(rootPath))
             {
@@ -176,7 +221,10 @@ namespace StylishLauncherINI
             if (string.IsNullOrWhiteSpace(rootPath) || !Directory.Exists(rootPath))
                 return;
 
+            fileTree.BeginUpdate(); // 描画停止で高速化
             LoadFolder(rootPath, fileTree.Nodes);
+            fileTree.EndUpdate();
+
             BuildFlatNodeList(fileTree.Nodes);
 
             if (fileTree.Nodes.Count > 0)
@@ -186,6 +234,10 @@ namespace StylishLauncherINI
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.UserClosing)
@@ -225,6 +277,11 @@ namespace StylishLauncherINI
             return index;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FileTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -255,42 +312,110 @@ namespace StylishLauncherINI
 
         private void LoadFolder(string path, TreeNodeCollection parentNodes)
         {
+            // ディレクトリ
             foreach (var dir in Directory.GetDirectories(path))
             {
-                var folderNode = new TreeNode($"▶ {Path.GetFileName(dir)}")
+                // ファイル名を表示
+                var folderNode = new TreeNode(Path.GetFileName(dir))
                 {
                     Tag = dir,
                     ForeColor = Color.LightSkyBlue
                 };
+
+                // アイコンを設定する
+                SetNodeIcon(folderNode, dir);
+
                 parentNodes.Add(folderNode);
                 LoadFolder(dir, folderNode.Nodes);
             }
 
+            // ファイル
             foreach (var file in Directory.GetFiles(path))
             {
-                var fileNode = new TreeNode($"📄 {Path.GetFileName(file)}")
+
+                var fileNode = new TreeNode(Path.GetFileName(file))
                 {
                     Tag = file,
                     ForeColor = Color.FromArgb(224, 224, 224)
                 };
+
+                // アイコン設定
+                SetNodeIcon(fileNode, file);
+
                 parentNodes.Add(fileNode);
             }
         }
 
+        /// <summary>
+        /// アイコン設定
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="path"></param>
+        private void SetNodeIcon(TreeNode node, string path)
+        {
+            NativeMethods.SHFILEINFO shinfo = new NativeMethods.SHFILEINFO();
+            uint flags = NativeMethods.SHGFI_ICON | NativeMethods.SHGFI_SMALLICON;
+
+            IntPtr hImg = NativeMethods.SHGetFileInfo(
+                path,
+                0,
+                ref shinfo,
+                (uint)Marshal.SizeOf(shinfo),
+                flags);
+
+            if (hImg != IntPtr.Zero && shinfo.hIcon != IntPtr.Zero)
+            {
+                try
+                {
+                    using (Icon icon = Icon.FromHandle(shinfo.hIcon))
+                    {
+
+                        Bitmap bmp = icon.ToBitmap();
+
+                        if (!iconList.Images.ContainsKey(path))
+                        {
+                            iconList.Images.Add(path, bmp);
+                        }
+
+                        node.ImageKey = path;
+                        node.SelectedImageKey = path;
+                    }
+                }
+                finally
+                {
+                    NativeMethods.DestroyIcon(shinfo.hIcon);
+                }
+            }
+        }
+
+        /// <summary>
+        /// FileTree_DrawNode
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FileTree_DrawNode(object sender, DrawTreeNodeEventArgs e)
         {
+
             if (e.Node.IsSelected)
+            {
+                // 選択時の背景色描画
                 e.Graphics.FillRectangle(Brushes.DarkCyan, e.Bounds);
+            }
 
             TextRenderer.DrawText(
                 e.Graphics,
                 e.Node.Text,
                 e.Node.TreeView.Font,
-                e.Bounds,
+                e.Bounds, // テキスト領域に描画
                 Color.White,
                 TextFormatFlags.VerticalCenter | TextFormatFlags.Left);
         }
 
+        /// <summary>
+        /// FileTree_NodeMouseDoubleClick
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FileTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             OpenFileOrFolder(e.Node);
@@ -319,6 +444,10 @@ namespace StylishLauncherINI
 
         }
 
+        /// <summary>
+        /// ファイルかフォルダを開く
+        /// </summary>
+        /// <param name="node"></param>
         private void OpenFileOrFolder(TreeNode node)
         {
             string path = node.Tag as string;
@@ -342,14 +471,10 @@ namespace StylishLauncherINI
             else if (Directory.Exists(path))
             {
                 node.Toggle();
-
-                if (node.Text.StartsWith("▶"))
-                    node.Text = node.Text.Replace("▶", "▼");
-                else if (node.Text.StartsWith("▼"))
-                    node.Text = node.Text.Replace("▼", "▶");
             }
         }
     }
+
 
     public static class TreeNodeExtensions
     {
@@ -359,6 +484,4 @@ namespace StylishLauncherINI
             else node.Expand();
         }
     }
-
-
 }
