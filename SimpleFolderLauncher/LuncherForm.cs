@@ -111,6 +111,17 @@ namespace StylishLauncherINI
                 ReloadTree();
             });
 
+            trayMenu.Items.Add(new ToolStripSeparator());
+
+            trayMenu.Items.Add("ヘルプ", null, (s, e) =>
+            {
+                using (var help = new HelpForm())
+                {
+                    help.ShowDialog();
+                }
+            });
+
+
             trayMenu.Items.Add("終了", null, (s, e) =>
             {
                 trayIcon.Visible = false;
