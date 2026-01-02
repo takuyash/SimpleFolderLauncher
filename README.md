@@ -45,9 +45,11 @@ Windows 11 で「フォルダをタスクバーにピン留めできなくなっ
 ## スクリーンショット
 
 ### ランチャー画面
+<img src="screenshots/launcher" height="50%">
 ![Launcher](screenshots/launcher.png)
 
 ### 設定画面
+<img src="screenshots/setting.png" width="70%"  height="70%">
 ![setting](screenshots/setting.png)
 
 ## 免責事項
