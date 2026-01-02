@@ -442,6 +442,7 @@ namespace StylishLauncherINI
 
         private void FileTree_KeyDown(object sender, KeyEventArgs e)
         {
+            // メイン数字キー
             if (e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9)
             {
                 int index = e.KeyCode - Keys.D0;
@@ -451,6 +452,17 @@ namespace StylishLauncherINI
                 return;
             }
 
+            // テンキー
+            if (e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9)
+            {
+                int index = e.KeyCode - Keys.NumPad0;
+                if (index < flatNodeList.Count)
+                    OpenFileOrFolder(flatNodeList[index]);
+                e.Handled = true;
+                return;
+            }
+
+            // A-Z
             if (e.KeyCode >= Keys.A && e.KeyCode <= Keys.Z)
             {
                 int index = 10 + (e.KeyCode - Keys.A);
@@ -459,9 +471,8 @@ namespace StylishLauncherINI
                 e.Handled = true;
                 return;
             }
-
-
         }
+
 
         /// <summary>
         /// ファイルかフォルダを開く
