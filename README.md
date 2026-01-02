@@ -8,13 +8,16 @@ Windows の任意のフォルダを “そのままランチャー” として�
 Windows 11 で「フォルダをタスクバーにピン留めできなくなった問題」を解決するために作成しました。  
 そのため、タスクバーにピン留めしていたフォルダがあれば、そのままこのランチャーで使用することができます。
 
-### ランチャー画面
-<img src="screenshots/launcher.png" height="20%">
+### ランチャー画面サンプル
+<img src="screenshots/launcher.png" height="10%">
 
 ## 使い方（クイックスタート）
-0. 最新バージョンをダウンロードし、任意の場所に解凍します 
+0. 下記から最新バージョンをダウンロードし、任意の場所に解凍します 
    https://github.com/takuyash/SimpleFolderLauncher/releases
-1. exe を実行するとタスクトレイに常駐します
+   <img src="screenshots/decompress.png" height="10%">  
+
+1. exe を実行するとタスクトレイに常駐します  
+<img src="screenshots/taskTray.png" height="10%">  
 
 2. タスクトレイのアイコンを右クリックして、設定画面が開けます  
    ランチャーに表示したいフォルダのパスを設定します。  
@@ -22,7 +25,7 @@ Windows 11 で「フォルダをタスクバーにピン留めできなくなっ
    <img src="screenshots/setting.png" width="50%"  height="40%">  
    
 3. Ctrl + Shift + I のショートカットでランチャーを呼び出すことができます  
-<img src="screenshots/launcher.png" height="20%">  
+   <img src="screenshots/launcher.png" height="10%">  
 
 4. 表示された項目のキー（0-9 / A-Z）を押すだけでフォルダを開けます
 
