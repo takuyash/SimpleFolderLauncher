@@ -10,7 +10,7 @@ namespace StylishLauncherINI
     {
 
         private const string GitHubRepoUrl = "https://github.com/takuyash/SimpleFolderLauncher";
-        private const string HelpUrl = "https://github.com/takuyash/SimpleFolderLauncher/blob/main/README.md";
+        private const string HelpUrl = "https://takuyash.github.io/SimplefolderlauncherSite/docs.html";
         private const string LicenseUrl = "https://github.com/takuyash/SimpleFolderLauncher/blob/main/LICENSE";
 
         public HelpForm()
