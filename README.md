@@ -15,7 +15,6 @@ Windows 11 で「フォルダをタスクバーにピン留めできなくなっ
 0. 下記から最新バージョンをダウンロードし、任意の場所に解凍します 
    https://github.com/takuyash/SimpleFolderLauncher/releases  
 
-
    <img src="screenshots/decompress.png" width="40%">  
 
 1. exe を実行するとタスクトレイに常駐します  
@@ -35,6 +34,10 @@ Windows 11 で「フォルダをタスクバーにピン留めできなくなっ
 ・exeを実行すると、タスクトレイに常駐します。  
 ・タスクトレイのアイコンを右クリックして、設定画面が開けます。  
 ・ランチャー画面は、Ctrl + Shift + I で表示できます。
+
+詳細な手順は下記に記載。
+https://takuyash.github.io/SimplefolderlauncherSite/docs.html
+
 
 ## 特徴
 1. 設定不要。フォルダ構造がそのままランチャーとなる  
