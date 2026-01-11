@@ -35,7 +35,7 @@ Windows 11 で「フォルダをタスクバーにピン留めできなくなっ
 ・タスクトレイのアイコンを右クリックして、設定画面が開けます。  
 ・ランチャー画面は、Ctrl + Shift + I で表示できます。
 
-詳細な手順は下記に記載。
+詳細な手順は下記に記載。  
 https://takuyash.github.io/SimplefolderlauncherSite/docs.html
 
 
