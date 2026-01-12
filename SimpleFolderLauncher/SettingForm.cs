@@ -10,6 +10,7 @@ namespace StylishLauncherINI
     public class SettingsForm : Form
     {
         private TextBox txtPath;
+        private Button btnBrowse;
         private Button btnSave;
 
         private string iniPath;
@@ -19,7 +20,7 @@ namespace StylishLauncherINI
             iniPath = iniFilePath;
 
             this.Text = "設定";
-            this.Size = new System.Drawing.Size(420, 150);
+            this.Size = new System.Drawing.Size(450, 150);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -29,7 +30,7 @@ namespace StylishLauncherINI
                 Text = "LauncherFolder のパス:",
                 Left = 10,
                 Top = 10,
-                Width = 380
+                Width = 400
             };
             this.Controls.Add(lbl);
 
@@ -37,14 +38,24 @@ namespace StylishLauncherINI
             {
                 Left = 10,
                 Top = 35,
-                Width = 380
+                Width = 320
             };
             this.Controls.Add(txtPath);
+
+            btnBrowse = new Button()
+            {
+                Text = "参照...",
+                Left = 340,
+                Top = 33,
+                Width = 80
+            };
+            btnBrowse.Click += BtnBrowse_Click;
+            this.Controls.Add(btnBrowse);
 
             btnSave = new Button()
             {
                 Text = "保存",
-                Left = 300,
+                Left = 330,
                 Top = 70,
                 Width = 90
             };
@@ -62,18 +73,35 @@ namespace StylishLauncherINI
             }
         }
 
+        private void BtnBrowse_Click(object sender, EventArgs e)
+        {
+            using (var dialog = new FolderBrowserDialog())
+            {
+                dialog.Description = "Launcher フォルダを選択してください";
+
+                // 既に入力されている場合は初期フォルダに設定
+                if (Directory.Exists(txtPath.Text))
+                {
+                    dialog.SelectedPath = txtPath.Text;
+                }
+
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    txtPath.Text = dialog.SelectedPath;
+                }
+            }
+        }
+
         private void BtnSave_Click(object sender, EventArgs e)
         {
             string folder = txtPath.Text.Trim();
 
-            // 空チェック
             if (string.IsNullOrEmpty(folder))
             {
                 MessageBox.Show("パスを入力してください。");
                 return;
             }
 
-            // 存在チェック
             if (!Directory.Exists(folder))
             {
                 MessageBox.Show("指定されたフォルダは存在しません。");
@@ -82,9 +110,7 @@ namespace StylishLauncherINI
 
             try
             {
-                // INIを書き込み（上書き or 作成）
                 File.WriteAllText(iniPath, $"LauncherFolder={folder}");
-
                 MessageBox.Show("保存しました。");
                 this.Close();
             }
