@@ -64,6 +64,7 @@ namespace StylishLauncherINI
         private ContextMenuStrip nodeContextMenu;
         private List<TreeNode> flatNodeList = new List<TreeNode>();
         private ImageList iconList; // アイコンリスト
+        private Label lblNoPath;
 
         // タスクトレイ
         private NotifyIcon trayIcon;
@@ -161,6 +162,19 @@ namespace StylishLauncherINI
             fileTree.KeyDown += FileTree_KeyDown;
             fileTree.NodeMouseClick += FileTree_NodeMouseClick;
 
+            // パス未設定時メッセージ
+            lblNoPath = new Label
+            {
+                Dock = DockStyle.Fill,
+                Text = "フォルダが設定されていません。\n\nタスクトレイのアプリケーションから\n「設定」を行ってください。",
+                ForeColor = Color.LightGray,
+                BackColor = Color.Transparent,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Font = new Font("Meiryo UI", 10f),
+                Visible = false
+            };
+
+            this.Controls.Add(lblNoPath);
             this.Controls.Add(fileTree);
 
             nodeContextMenu = new ContextMenuStrip();
@@ -231,7 +245,14 @@ namespace StylishLauncherINI
             }
 
             if (string.IsNullOrWhiteSpace(rootPath) || !Directory.Exists(rootPath))
+            {
+                fileTree.Visible = false;
+                lblNoPath.Visible = true;
                 return;
+            }
+
+            fileTree.Visible = true;
+            lblNoPath.Visible = false;
 
             fileTree.BeginUpdate(); // 描画停止で高速化
             LoadFolder(rootPath, fileTree.Nodes, true); // 第3引数で再帰するか決める
