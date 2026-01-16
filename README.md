@@ -1,4 +1,4 @@
-# SimpleFolderLauncher
+# SimpleFolderLauncher (シンプルフォルダランチャー)
 
 Windowsフォルダをそのまま使える、超軽量・超高速フォルダランチャー
 
