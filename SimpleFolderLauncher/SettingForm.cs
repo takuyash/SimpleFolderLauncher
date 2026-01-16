@@ -27,7 +27,7 @@ namespace StylishLauncherINI
 
             var lbl = new Label()
             {
-                Text = "LauncherFolder のパス:",
+                Text = "フォルダのパス:",
                 Left = 10,
                 Top = 10,
                 Width = 400
@@ -77,7 +77,7 @@ namespace StylishLauncherINI
         {
             using (var dialog = new FolderBrowserDialog())
             {
-                dialog.Description = "Launcher フォルダを選択してください";
+                dialog.Description = "フォルダを選択してください";
 
                 // 既に入力されている場合は初期フォルダに設定
                 if (Directory.Exists(txtPath.Text))
