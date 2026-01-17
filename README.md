@@ -87,6 +87,7 @@ https://takuyash.github.io/SimplefolderlauncherSite/docs.html
 4. 起動する  
 
 ## その他
+・スタートアップに登録しておくと自動で起動して常駐するので起動忘れの心配がないので設定をお勧めします。
 ・外部キーボードを使用している場合にテンキー入力する場合は、NumLockをONにしてください。
 
 ## 免責事項
