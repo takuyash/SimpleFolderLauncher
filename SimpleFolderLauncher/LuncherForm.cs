@@ -65,6 +65,8 @@ namespace StylishLauncherINI
         private List<TreeNode> flatNodeList = new List<TreeNode>();
         private ImageList iconList; // アイコンリスト
         private Label lblNoPath;
+        private TextBox txtSearch; // 検索ボックス
+        private string currentRootPath = ""; // ルートパス保持用
 
         // タスクトレイ
         private NotifyIcon trayIcon;
@@ -77,7 +79,7 @@ namespace StylishLauncherINI
         public LauncherForm(string initialPath = "")
         {
             this.Text = "SimpleFolderLauncher";
-            this.Size = new Size(420, 550);
+            this.Size = new Size(420, 600);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.DoubleBuffered = true;
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
@@ -85,12 +87,32 @@ namespace StylishLauncherINI
 
             this.KeyPreview = true;
 
-            this.Icon = new Icon(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "icon.ico"));
+            try { this.Icon = new Icon(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "icon.ico")); } catch { }
 
             // ImageListの初期化
             iconList = new ImageList();
             iconList.ColorDepth = ColorDepth.Depth32Bit;
             iconList.ImageSize = new Size(16, 16); // アイコンサイズ
+
+            // ================================
+            // 検索ボックス
+            // ================================
+            txtSearch = new TextBox
+            {
+                Dock = DockStyle.Top,
+                BackColor = Color.FromArgb(45, 45, 45),
+                ForeColor = Color.White,
+                BorderStyle = BorderStyle.FixedSingle,
+                Font = new Font("Meiryo UI", 10f),
+                TabIndex = 1
+            };
+            txtSearch.TextChanged += (s, e) => ReloadTree(currentRootPath);
+            txtSearch.KeyDown += (s, e) => {
+                if (e.KeyCode == Keys.Down || e.KeyCode == Keys.Enter)
+                {
+                    if (fileTree.Nodes.Count > 0) { fileTree.Focus(); e.Handled = true; }
+                }
+            };
 
             // ================================
             // タスクトレイ
@@ -101,12 +123,13 @@ namespace StylishLauncherINI
             {
                 this.Show();
                 this.Activate();
+                fileTree.Focus();
             });
 
             trayMenu.Items.Add("設定", null, (s, e) =>
             {
                 string iniPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
-     
+
                 var settings = new SettingsForm(iniPath);
                 settings.ShowDialog();
                 ReloadTree();
@@ -131,7 +154,7 @@ namespace StylishLauncherINI
 
             trayIcon = new NotifyIcon
             {
-                Icon = new Icon(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "icon.ico")),
+                Icon = this.Icon,
                 Visible = true,
                 Text = "SimpleFolderLauncher",
                 ContextMenuStrip = trayMenu
@@ -153,8 +176,9 @@ namespace StylishLauncherINI
                 BackColor = Color.FromArgb(30, 30, 30),
                 BorderStyle = BorderStyle.None,
                 ImageList = iconList, // ImageListを紐づけする
-                ShowLines = false,   
-                ShowPlusMinus = true
+                ShowLines = false,
+                ShowPlusMinus = true,
+                TabIndex = 0
             };
 
             fileTree.DrawNode += FileTree_DrawNode;
@@ -174,8 +198,9 @@ namespace StylishLauncherINI
                 Visible = false
             };
 
-            this.Controls.Add(lblNoPath);
             this.Controls.Add(fileTree);
+            this.Controls.Add(txtSearch);
+            this.Controls.Add(lblNoPath);
 
             nodeContextMenu = new ContextMenuStrip();
             var copyPathItem = new ToolStripMenuItem("パスをコピー");
@@ -183,6 +208,8 @@ namespace StylishLauncherINI
             nodeContextMenu.Items.Add(copyPathItem);
 
             ReloadTree(initialPath);
+
+            this.Shown += (s, e) => fileTree.Focus();
         }
 
         /// <summary>
@@ -209,7 +236,7 @@ namespace StylishLauncherINI
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
 
-            if (keyData == Keys.Enter)
+            if (keyData == Keys.Enter && fileTree.Focused)
             {
                 if (fileTree.SelectedNode != null)
                 {
@@ -233,6 +260,7 @@ namespace StylishLauncherINI
         /// <param name="rootPath"></param>
         private void ReloadTree(string rootPath = "")
         {
+            fileTree.BeginUpdate(); // 描画停止で高速化
             fileTree.Nodes.Clear();
             flatNodeList.Clear();
             iconList.Images.Clear(); // リロード時にアイコンキャッシュもクリア
@@ -243,28 +271,30 @@ namespace StylishLauncherINI
                 var ini = IniHelper.ReadIni(iniPath);
                 rootPath = ini.ContainsKey("LauncherFolder") ? ini["LauncherFolder"] : "";
             }
+            currentRootPath = rootPath;
 
             if (string.IsNullOrWhiteSpace(rootPath) || !Directory.Exists(rootPath))
             {
                 fileTree.Visible = false;
                 lblNoPath.Visible = true;
+                fileTree.EndUpdate();
                 return;
             }
 
             fileTree.Visible = true;
             lblNoPath.Visible = false;
 
-            fileTree.BeginUpdate(); // 描画停止で高速化
-            LoadFolder(rootPath, fileTree.Nodes, true); // 第3引数で再帰するか決める
+            LoadFolder(rootPath, fileTree.Nodes, true, txtSearch.Text.ToLower()); // 第4引数でフィルタ
             fileTree.EndUpdate();
 
             BuildFlatNodeList(fileTree.Nodes);
 
-            if (fileTree.Nodes.Count > 0)
+            if (fileTree.Nodes.Count > 0 && fileTree.SelectedNode == null)
             {
                 fileTree.SelectedNode = fileTree.Nodes[0];
-                fileTree.Focus();
             }
+
+            if (!string.IsNullOrWhiteSpace(txtSearch.Text)) fileTree.ExpandAll();
         }
 
         /// <summary>
@@ -284,7 +314,6 @@ namespace StylishLauncherINI
 
         private void BuildFlatNodeList(TreeNodeCollection nodes)
         {
-            flatNodeList.Clear();
             AddNodesToFlatList(nodes, 0);
         }
 
@@ -292,14 +321,16 @@ namespace StylishLauncherINI
         {
             foreach (TreeNode node in nodes)
             {
-                if (File.Exists(node.Tag as string) || Directory.Exists(node.Tag as string))
+                string path = node.Tag as string;
+                if (File.Exists(path) || Directory.Exists(path))
                 {
+                    string originalName = Path.GetFileName(path);
                     string keyLabel;
                     if (index < 10) keyLabel = $"{index}: ";
                     else if (index < 36) keyLabel = $"{(char)('A' + index - 10)}: ";
-                    else keyLabel = "   ";
+                    else keyLabel = "    ";
 
-                    node.Text = keyLabel + node.Text;
+                    node.Text = keyLabel + originalName;
                     flatNodeList.Add(node);
                     index++;
                 }
@@ -349,41 +380,44 @@ namespace StylishLauncherINI
         /// <param name="path"></param>
         /// <param name="parentNodes"></param>
         /// <param name="recursive"></param>
-        private void LoadFolder(string path, TreeNodeCollection parentNodes, bool recursive = false)
+        /// <param name="filter"></param>
+        private void LoadFolder(string path, TreeNodeCollection parentNodes, bool recursive, string filter = "")
         {
-            foreach (var dir in Directory.GetDirectories(path))
+            try
             {
-                var folderNode = new TreeNode(Path.GetFileName(dir)) { Tag = dir, ForeColor = Color.LightSkyBlue };
-                SetNodeIcon(folderNode, dir);
-                parentNodes.Add(folderNode);
-
-                // recursive が true の場合のみ再帰する
-                if (recursive)
+                foreach (var dir in Directory.GetDirectories(path))
                 {
-                    try
-                    {
-                        LoadFolder(dir, folderNode.Nodes, false); // 子階層は再帰しない設定で呼ぶ
-                    }
-                    catch { 
+                    string dirName = Path.GetFileName(dir);
+                    var folderNode = new TreeNode(dirName) { Tag = dir, ForeColor = Color.LightSkyBlue };
 
+                    // 子要素を読み込む
+                    LoadFolder(dir, folderNode.Nodes, false, filter);
+
+                    // フィルタ条件：フォルダ名が一致するか、子要素に一致するものがある場合
+                    if (string.IsNullOrEmpty(filter) || dirName.ToLower().Contains(filter) || folderNode.Nodes.Count > 0)
+                    {
+                        SetNodeIcon(folderNode, dir);
+                        parentNodes.Add(folderNode);
+                    }
+                }
+
+                // ファイル
+                foreach (var file in Directory.GetFiles(path))
+                {
+                    string fileName = Path.GetFileName(file);
+                    if (string.IsNullOrEmpty(filter) || fileName.ToLower().Contains(filter))
+                    {
+                        var fileNode = new TreeNode(fileName)
+                        {
+                            Tag = file,
+                            ForeColor = Color.FromArgb(224, 224, 224)
+                        };
+                        SetNodeIcon(fileNode, file);
+                        parentNodes.Add(fileNode);
                     }
                 }
             }
-            // ファイル
-            foreach (var file in Directory.GetFiles(path))
-            {
-
-                var fileNode = new TreeNode(Path.GetFileName(file))
-                {
-                    Tag = file,
-                    ForeColor = Color.FromArgb(224, 224, 224)
-                };
-
-                // アイコン設定
-                SetNodeIcon(fileNode, file);
-
-                parentNodes.Add(fileNode);
-            }
+            catch { }
         }
 
         /// <summary>
@@ -407,19 +441,15 @@ namespace StylishLauncherINI
             {
                 try
                 {
-                    using (Icon icon = Icon.FromHandle(shinfo.hIcon))
+                    if (!iconList.Images.ContainsKey(path))
                     {
-
-                        Bitmap bmp = icon.ToBitmap();
-
-                        if (!iconList.Images.ContainsKey(path))
+                        using (Icon icon = Icon.FromHandle(shinfo.hIcon))
                         {
-                            iconList.Images.Add(path, bmp);
+                            iconList.Images.Add(path, icon.ToBitmap());
                         }
-
-                        node.ImageKey = path;
-                        node.SelectedImageKey = path;
                     }
+                    node.ImageKey = path;
+                    node.SelectedImageKey = path;
                 }
                 finally
                 {
@@ -463,6 +493,14 @@ namespace StylishLauncherINI
 
         private void FileTree_KeyDown(object sender, KeyEventArgs e)
         {
+            // 上キーで検索ボックスに戻る
+            if (e.KeyCode == Keys.Up && fileTree.SelectedNode == fileTree.Nodes[0])
+            {
+                txtSearch.Focus();
+                e.Handled = true;
+                return;
+            }
+
             // メイン数字キー
             if (e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9)
             {
