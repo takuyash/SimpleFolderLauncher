@@ -11,7 +11,9 @@ namespace StylishLauncherINI
         // --- Win32 API Definitions ---
         private const int WH_KEYBOARD_LL = 13;
         private const int WM_KEYDOWN = 0x0100;
+        private const int WM_KEYUP = 0x0101; // 追加
         private const int WM_SYSKEYDOWN = 0x0104;
+        private const int WM_SYSKEYUP = 0x0105; // 追加
         private const int VK_LSHIFT = 0xA0;
         private const int VK_RSHIFT = 0xA1;
 
@@ -43,10 +45,13 @@ namespace StylishLauncherINI
 
         // --- Fields ---
         private static IntPtr _hookID = IntPtr.Zero;
-        private static LowLevelKeyboardProc _proc = HookCallback; // GC対策で静的変数に保持
+        private static LowLevelKeyboardProc _proc = HookCallback;
         private static DateTime _lastShiftTime = DateTime.MinValue;
         private const int DOUBLE_PRESS_MS = 300;
         private static LauncherForm _launcher;
+
+        // 【重要】長押し判定用のフラグ
+        private static bool _isShiftPressed = false;
 
         [STAThread]
         static void Main()
@@ -54,31 +59,22 @@ namespace StylishLauncherINI
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // ini読み込み
             string iniPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
             var ini = IniHelper.ReadIni(iniPath);
             string rootPath = ini.ContainsKey("LauncherFolder") ? ini["LauncherFolder"] : "";
 
-            // --- Mainメソッド内 ---
             _launcher = new LauncherForm(rootPath);
-
-            // ハンドルを強制的に作成させる
             IntPtr forceHandle = _launcher.Handle;
-
             _launcher.Hide();
 
-            // 1. Shiftキー監視用のフックを開始
             _hookID = SetHook(_proc);
 
-            // 2. Ctrl + Shift + I は引き続きホットキーで登録（これは文字入力と被らないためOK）
             MessageWindow messageWindow = new MessageWindow();
             RegisterHotKey(messageWindow.Handle, HOTKEY_ID_CTRL_SHIFT_I, MOD_CONTROL | MOD_SHIFT, (int)Keys.I);
-
             messageWindow.LauncherRequested += ToggleLauncher;
 
             Application.Run();
 
-            // 終了処理
             UnhookWindowsHookEx(_hookID);
             UnregisterHotKey(messageWindow.Handle, HOTKEY_ID_CTRL_SHIFT_I);
         }
@@ -104,30 +100,51 @@ namespace StylishLauncherINI
 
         private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            if (nCode >= 0 && (wParam == (IntPtr)WM_KEYDOWN || wParam == (IntPtr)WM_SYSKEYDOWN))
+            if (nCode >= 0)
             {
                 int vkCode = Marshal.ReadInt32(lParam);
 
-                if (vkCode == VK_LSHIFT || vkCode == VK_RSHIFT)
+                // --- 1. キーが離された時の処理 ---
+                if (wParam == (IntPtr)WM_KEYUP || wParam == (IntPtr)WM_SYSKEYUP)
                 {
-                    var now = DateTime.Now;
-                    if ((now - _lastShiftTime).TotalMilliseconds <= DOUBLE_PRESS_MS)
+                    if (vkCode == VK_LSHIFT || vkCode == VK_RSHIFT)
                     {
-                        // ハンドルが作成されているか確認してから実行
-                        if (_launcher != null && _launcher.IsHandleCreated && !_launcher.IsDisposed)
+                        _isShiftPressed = false; // 押し下げ状態を解除
+                    }
+                }
+
+                // --- 2. キーが押された時の処理 ---
+                if (wParam == (IntPtr)WM_KEYDOWN || wParam == (IntPtr)WM_SYSKEYDOWN)
+                {
+                    if (vkCode == VK_LSHIFT || vkCode == VK_RSHIFT)
+                    {
+                        // 既に押されている（長押し中）なら無視
+                        if (_isShiftPressed)
                         {
-                            _launcher.BeginInvoke(new Action(() => ToggleLauncher(null, null)));
+                            return CallNextHookEx(_hookID, nCode, wParam, lParam);
                         }
-                        _lastShiftTime = DateTime.MinValue;
+
+                        _isShiftPressed = true; // 押し下げ状態を記録
+
+                        var now = DateTime.Now;
+                        if ((now - _lastShiftTime).TotalMilliseconds <= DOUBLE_PRESS_MS)
+                        {
+                            if (_launcher != null && _launcher.IsHandleCreated && !_launcher.IsDisposed)
+                            {
+                                _launcher.BeginInvoke(new Action(() => ToggleLauncher(null, null)));
+                            }
+                            _lastShiftTime = DateTime.MinValue; // 成功したらリセット
+                        }
+                        else
+                        {
+                            _lastShiftTime = now;
+                        }
                     }
                     else
                     {
-                        _lastShiftTime = now;
+                        // Shift以外のキーが押されたらリセット
+                        _lastShiftTime = DateTime.MinValue;
                     }
-                }
-                else
-                {
-                    _lastShiftTime = DateTime.MinValue;
                 }
             }
             return CallNextHookEx(_hookID, nCode, wParam, lParam);
