@@ -71,7 +71,10 @@ namespace StylishLauncherINI
 
             MessageWindow messageWindow = new MessageWindow();
             RegisterHotKey(messageWindow.Handle, HOTKEY_ID_CTRL_SHIFT_I, MOD_CONTROL | MOD_SHIFT, (int)Keys.I);
-            messageWindow.LauncherRequested += ToggleLauncher;
+            messageWindow.LauncherRequested += (s, e) =>
+            {
+                ShowLauncher();
+            };
 
             Application.Run();
 
@@ -87,6 +90,16 @@ namespace StylishLauncherINI
                 _launcher.Show();
                 _launcher.Activate();
             }
+        }
+
+        private static void ShowLauncher()
+        {
+            if (_launcher == null) return;
+            if (_launcher.IsDisposed) return;
+            if (_launcher.Visible) return; 
+
+            _launcher.Show();
+            _launcher.Activate();
         }
 
         private static IntPtr SetHook(LowLevelKeyboardProc proc)
@@ -131,9 +144,9 @@ namespace StylishLauncherINI
                         {
                             if (_launcher != null && _launcher.IsHandleCreated && !_launcher.IsDisposed)
                             {
-                                _launcher.BeginInvoke(new Action(() => ToggleLauncher(null, null)));
+                                _launcher.BeginInvoke(new Action(ShowLauncher));
                             }
-                            _lastShiftTime = DateTime.MinValue; // 成功したらリセット
+                            _lastShiftTime = DateTime.MinValue;
                         }
                         else
                         {
