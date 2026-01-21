@@ -106,3 +106,133 @@ https://takuyash.github.io/SimplefolderlauncherSite/docs.html
 GitHub の ⭐ Star や 👀 Watch を付けてもらえるととても励みになります！
 
 フィードバックや Issue も大歓迎です。
+
+
+
+# SimpleFolderLauncher
+
+An ultra-lightweight, ultra-fast folder launcher that uses Windows folders as-is.
+
+SimpleFolderLauncher allows you to use any Windows folder *directly as a launcher*.  
+It is an ultra-lightweight, ultra-fast, zero-configuration folder launcher.
+
+This tool was created to solve the issue in **Windows 11 where folders can no longer be pinned to the taskbar**.  
+Because it requires only a single setting to get started, it’s ideal for busy people who don’t have time for complicated setup.  
+If you already had folders pinned to the taskbar before, you can continue using them seamlessly with this launcher.
+
+This software is **freeware** and can be used at no cost.
+
+---
+
+### Demo
+<img src="screenshots/overview.gif" width="40%">
+
+### System Requirements
+- Windows 11
+
+---
+
+## How to Use (Quick Start)
+
+0. Download the latest version from the link below and extract it to any location:  
+   https://github.com/takuyash/SimpleFolderLauncher/releases  
+
+   <img src="screenshots/decompress.png" width="40%">
+
+1. Run the `.exe` file and it will reside in the system tray.  
+   <img src="screenshots/taskTray.png" height="10%">
+
+2. Right-click the system tray icon to open the settings window.  
+   Set the path of the folder you want to display in the launcher.  
+   Put shortcuts to frequently used applications, folders, or files into a single folder, and set that folder’s path here.  
+
+   <img src="screenshots/setting.png" width="30%">
+
+3. Launch the launcher using **double Shift** or **Ctrl + Shift + I**.  
+   <img src="screenshots/launcher.png" width="40%">
+
+4. Press the assigned key (0–9 / A–Z) to instantly open the corresponding folder.
+
+---
+
+## How It Works
+- Running the `.exe` places the app in the system tray.
+- Right-click the tray icon to open the settings window.
+- Open the launcher with **double Shift** or **Ctrl + Shift + I**.
+
+Detailed instructions are available here:  
+https://takuyash.github.io/SimplefolderlauncherSite/docs.html
+
+---
+
+## Features
+
+### 1. Almost No Setup — Your Folder Structure Becomes the Launcher
+Simply create your favorite folders in Windows Explorer and they are automatically reflected in the launcher.  
+Only one registration step is required: setting the folder path.  
+This allows you to start using the launcher immediately.
+
+### 2. Ultra-Fast Launching with 0–9 + A–Z Key Assignments
+Each displayed item is automatically assigned a key from 0–9 or A–Z.  
+After the launcher appears, just press the corresponding key to open the folder instantly.  
+Keyboard-only operation is fully supported.
+
+You can also open items using:
+- Arrow keys (↑ ↓) to move the cursor  
+- Mouse clicks  
+- Enter key  
+
+### 3. Easy Activation with Double Shift
+The launcher can be displayed using **double Shift** or **Ctrl + Shift + I**.
+
+### 4. Simple, Fast, and Lightweight
+- Clean and minimal UI  
+- Extremely low rendering cost  
+- Portable EXE  
+- Very fast startup and item launching  
+
+### 5. Search Function
+Search items by keyword.
+
+### 6. Right-Click Menu
+Right-click an item to copy its path.
+
+### 7. Close with the ESC Key
+Press `Esc` to instantly close the launcher.
+
+### 8. Instant Migration to New Versions
+Even when upgrading to the latest version, you only need to set the folder path again to resume use immediately.
+
+---
+
+## Updating the Application
+
+To update, download the new version and overwrite the existing folder.
+
+**Update steps:**
+1. Exit SimpleFolderLauncher  
+2. Download the new ZIP file  
+3. Overwrite the existing folder  
+4. Launch the application  
+
+---
+
+## Notes
+- Registering the app in Windows Startup is recommended so it launches automatically and is always available.
+- When using an external keyboard, make sure **NumLock** is ON to use the numeric keypad.
+- Pressing the Shift key five times or more may trigger the Windows Sticky Keys confirmation dialog.  
+  This is a standard Windows feature and **not a bug** in this application.
+
+---
+
+## Disclaimer
+The author assumes no responsibility for any damages resulting from the use of this software.  
+Use at your own risk.
+
+---
+
+## Support
+If you find this software helpful,  
+a ⭐ **Star** or 👀 **Watch** on GitHub would be greatly appreciated and very motivating!
+
+Feedback and issues are always welcome.
