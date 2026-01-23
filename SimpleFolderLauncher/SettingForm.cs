@@ -12,6 +12,7 @@ namespace StylishLauncherINI
         private TextBox txtPath;
         private Button btnBrowse;
         private Button btnSave;
+        private NumericUpDown numFontSize;
 
         private string iniPath;
 
@@ -20,7 +21,7 @@ namespace StylishLauncherINI
             iniPath = iniFilePath;
 
             this.Text = "設定";
-            this.Size = new System.Drawing.Size(450, 150);
+            this.Size = new System.Drawing.Size(450, 200);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -52,11 +53,31 @@ namespace StylishLauncherINI
             btnBrowse.Click += BtnBrowse_Click;
             this.Controls.Add(btnBrowse);
 
+            var lblFont = new Label()
+            {
+                Text = "文字サイズ:",
+                Left = 10,
+                Top = 75,
+                Width = 80
+            };
+            this.Controls.Add(lblFont);
+
+            numFontSize = new NumericUpDown()
+            {
+                Left = 90,
+                Top = 73,
+                Width = 60,
+                Minimum = 8,
+                Maximum = 20,
+                Value = 10
+            };
+            this.Controls.Add(numFontSize);
+
             btnSave = new Button()
             {
                 Text = "保存",
                 Left = 330,
-                Top = 70,
+                Top = 110,
                 Width = 90
             };
             btnSave.Click += BtnSave_Click;
@@ -69,6 +90,10 @@ namespace StylishLauncherINI
                 if (ini.ContainsKey("LauncherFolder"))
                 {
                     txtPath.Text = ini["LauncherFolder"];
+                }
+                if (ini.ContainsKey("FontSize") && decimal.TryParse(ini["FontSize"], out decimal fs))
+                {
+                    numFontSize.Value = Math.Max(numFontSize.Minimum, Math.Min(numFontSize.Maximum, fs));
                 }
             }
         }
@@ -110,7 +135,7 @@ namespace StylishLauncherINI
 
             try
             {
-                File.WriteAllText(iniPath, $"LauncherFolder={folder}");
+                File.WriteAllText(iniPath, $"LauncherFolder={folder}\nFontSize={numFontSize.Value}");
                 MessageBox.Show("保存しました。");
                 this.Close();
             }

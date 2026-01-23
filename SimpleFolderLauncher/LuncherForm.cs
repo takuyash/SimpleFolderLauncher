@@ -265,10 +265,25 @@ namespace StylishLauncherINI
             flatNodeList.Clear();
             iconList.Images.Clear(); // リロード時にアイコンキャッシュもクリア
 
+            string iniPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
+            var ini = IniHelper.ReadIni(iniPath);
+
+            // フォントサイズ・比率設定の反映
+            float fontSize = 10f;
+            if (ini.ContainsKey("FontSize") && float.TryParse(ini["FontSize"], out float fs)) fontSize = fs;
+
+            float ratio = fontSize / 10f;
+            int iconSize = (int)(16 * ratio);
+
+            Font newFont = new Font("Meiryo UI", fontSize);
+            fileTree.Font = newFont;
+            txtSearch.Font = newFont;
+            lblNoPath.Font = newFont;
+            fileTree.ItemHeight = (int)(20 * ratio); // 比率に応じて高さを調整
+            iconList.ImageSize = new Size(iconSize, iconSize);
+
             if (string.IsNullOrWhiteSpace(rootPath))
             {
-                string iniPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
-                var ini = IniHelper.ReadIni(iniPath);
                 rootPath = ini.ContainsKey("LauncherFolder") ? ini["LauncherFolder"] : "";
             }
             currentRootPath = rootPath;
@@ -445,7 +460,8 @@ namespace StylishLauncherINI
                     {
                         using (Icon icon = Icon.FromHandle(shinfo.hIcon))
                         {
-                            iconList.Images.Add(path, icon.ToBitmap());
+                            // ImageList.ImageSizeに合わせてリサイズして追加
+                            iconList.Images.Add(path, new Bitmap(icon.ToBitmap(), iconList.ImageSize));
                         }
                     }
                     node.ImageKey = path;
