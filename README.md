@@ -11,10 +11,10 @@ Windows 11 で「フォルダをタスクバーにピン留めできなくなっ
 
 本ソフトウェアはフリーソフトですので無料で使用することができます。
 
-### 画面動作
+## 画面動作
    <img src="screenshots/overview.gif" width="40%">  
 
-### 動作環境
+## 動作環境
 Windows 11
 
 ## 使い方（クイックスタート）
@@ -41,7 +41,7 @@ Windows 11
 ・タスクトレイのアイコンを右クリックして、設定画面が開けます。  
 ・ランチャー画面は、Shift 2回連続 もしくは Ctrl + Shift + i で表示できます。
 
-詳細な手順は下記に記載。  
+詳細な手順は下記に記載  
 https://takuyash.github.io/SimplefolderlauncherSite/docs.html
 
 
@@ -51,7 +51,7 @@ https://takuyash.github.io/SimplefolderlauncherSite/docs.html
 そのため、アプリ側で“登録作業”は1つだけ。  
 フォルダのパスを設定するだけで使い始められるため、高速に利用開始することができます。
 
-2. 0–9 + A–Z のキー割り当てで超高速起動
+2. 0–9 + A–Z のキー割り当てで超高速起動  
 表示された項目には自動で 0〜9、A〜Z のキーが割り当てられます。   
 ランチャー表示後は 該当キーを押すだけで即フォルダオープンします。  
 そのためキーボードだけで操作が完結します。
@@ -60,25 +60,25 @@ https://takuyash.github.io/SimplefolderlauncherSite/docs.html
 ・マウスでクリックして開く  
 ・エンターで開く  
 
-3. Shift 2回連続で簡単に起動
+3. Shift 2回連続で簡単に起動  
 ランチャー画面は、Shift 2回連続 もしくは Ctrl + Shift + i で表示できます。   
 
-4. シンプル高速・軽量動作
+4. シンプル高速・軽量動作  
 ・シンプルなUI  
 ・描画コスト極低  
 ・ポータブル EXE で動作  
 ・起動、アイテムクリックが極めて高速  
 
-5. 検索機能
+5. キーワード検索機能  
 キーワードによる検索ができます。
 
-6. Right-Click メニュー
+6. Right-Click メニュー  
 各項目を右クリックするとパスをコピーできます。  
 
-7. escキーでランチャー画面を閉じる
+7. escキーでランチャー画面を閉じる  
 ランチャー画面を閉じる時もescキーですぐに閉じることができます。
 
-8. アプリの最新版への移行も一瞬
+8. アプリの最新版への移行も一瞬  
 最新版をダウンロードして移行する場合も、フォルダのパスを設定するだけなので高速に使い始めることができます。
 
 ## アプリ更新方法
@@ -125,10 +125,10 @@ This software is **freeware** and can be used at no cost.
 
 ---
 
-### Demo
+## Demo
 <img src="screenshots/overview.gif" width="40%">
 
-### System Requirements
+## System Requirements
 - Windows 11
 
 ---
