@@ -133,15 +133,71 @@ namespace StylishLauncherINI
                 return;
             }
 
+            // ドライブ直下・システムフォルダチェック
+            if (IsInvalidRootFolder(folder))
+            {
+                MessageBox.Show(
+                    "ドライブ直下やシステムフォルダは登録できません。\n" +
+                    "サブフォルダを指定してください。");
+                return;
+            }
+
+            // アクセス権チェック
+            if (!CanAccessFolder(folder))
+            {
+                MessageBox.Show(
+                    "このフォルダにはアクセス権がありません。\n" +
+                    "別のフォルダを指定してください。");
+                return;
+            }
+
             try
             {
-                File.WriteAllText(iniPath, $"LauncherFolder={folder}\nFontSize={numFontSize.Value}");
+                File.WriteAllText(
+                    iniPath,
+                    $"LauncherFolder={folder}\nFontSize={numFontSize.Value}");
+
                 MessageBox.Show("保存しました。");
                 this.Close();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("保存に失敗しました: " + ex.Message);
+            }
+        }
+
+        private bool IsInvalidRootFolder(string path)
+        {
+            // C:\ や D:\ の直下か？
+            string root = Path.GetPathRoot(path);
+            if (string.Equals(
+                    Path.GetFullPath(path).TrimEnd('\\'),
+                    root.TrimEnd('\\'),
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            // 明示的に禁止したいフォルダ名
+            string name = Path.GetFileName(path.TrimEnd('\\'));
+
+            return name.Equals("$Recycle.Bin", StringComparison.OrdinalIgnoreCase)
+                || name.Equals("System Volume Information", StringComparison.OrdinalIgnoreCase)
+                || name.Equals("Windows", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private bool CanAccessFolder(string path)
+        {
+            try
+            {
+                // 実際に触ってみるのが一番確実
+                Directory.GetDirectories(path);
+                Directory.GetFiles(path);
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
     }
