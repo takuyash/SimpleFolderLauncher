@@ -121,19 +121,21 @@ namespace StylishLauncherINI
         {
             string folder = txtPath.Text.Trim();
 
+            // ① 空チェック
             if (string.IsNullOrEmpty(folder))
             {
                 MessageBox.Show("パスを入力してください。");
                 return;
             }
 
+            // ② 存在チェック
             if (!Directory.Exists(folder))
             {
                 MessageBox.Show("指定されたフォルダは存在しません。");
                 return;
             }
 
-            // ドライブ直下・システムフォルダチェック
+            // ③ ドライブ直下・システムフォルダチェック
             if (IsInvalidRootFolder(folder))
             {
                 MessageBox.Show(
@@ -142,7 +144,7 @@ namespace StylishLauncherINI
                 return;
             }
 
-            // アクセス権チェック
+            // ④ アクセス権チェック
             if (!CanAccessFolder(folder))
             {
                 MessageBox.Show(
@@ -151,6 +153,36 @@ namespace StylishLauncherINI
                 return;
             }
 
+            // ⑤ フォルダ＋ファイル総数チェック
+            const int MAX_ITEMS = 1000;
+            const int WARNING_ITEMS = 500;
+
+            if (!TryCountItems(folder, MAX_ITEMS, out int count))
+            {
+                MessageBox.Show(
+                    $"フォルダ内の項目数が多すぎます。\n\n" +
+                    $"上限 : {MAX_ITEMS}\n" +
+                    $"検出 : {count} 以上\n\n" +
+                    $"より小さなフォルダを指定してください。");
+                return;
+            }
+
+            // 警告ライン
+            if (count > WARNING_ITEMS)
+            {
+                var result = MessageBox.Show(
+                    $"このフォルダには {count} 個の項目があります。\n" +
+                    $"動作が重くなる可能性があります。\n\n" +
+                    $"それでも登録しますか？",
+                    "確認",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning);
+
+                if (result != DialogResult.Yes)
+                    return;
+            }
+
+            // ⑥ 保存
             try
             {
                 File.WriteAllText(
@@ -168,29 +200,17 @@ namespace StylishLauncherINI
 
         private bool IsInvalidRootFolder(string path)
         {
-            // C:\ や D:\ の直下か？
-            string root = Path.GetPathRoot(path);
-            if (string.Equals(
-                    Path.GetFullPath(path).TrimEnd('\\'),
-                    root.TrimEnd('\\'),
-                    StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
+            string fullPath = Path.GetFullPath(path).TrimEnd('\\');
+            string root = Path.GetPathRoot(fullPath).TrimEnd('\\');
 
-            // 明示的に禁止したいフォルダ名
-            string name = Path.GetFileName(path.TrimEnd('\\'));
-
-            return name.Equals("$Recycle.Bin", StringComparison.OrdinalIgnoreCase)
-                || name.Equals("System Volume Information", StringComparison.OrdinalIgnoreCase)
-                || name.Equals("Windows", StringComparison.OrdinalIgnoreCase);
+            return string.Equals(fullPath, root, StringComparison.OrdinalIgnoreCase)
+                || IsProtectedFolder(path);
         }
 
         private bool CanAccessFolder(string path)
         {
             try
             {
-                // 実際に触ってみるのが一番確実
                 Directory.GetDirectories(path);
                 Directory.GetFiles(path);
                 return true;
@@ -199,6 +219,92 @@ namespace StylishLauncherINI
             {
                 return false;
             }
+        }
+
+        private bool IsReparsePoint(string path)
+        {
+            try
+            {
+                var attr = File.GetAttributes(path);
+                return (attr & FileAttributes.ReparsePoint) != 0;
+            }
+            catch
+            {
+                return true; // 属性取得できない = 危険
+            }
+        }
+
+        private bool IsProtectedFolder(string path)
+        {
+            string name = Path.GetFileName(path.TrimEnd('\\'));
+
+
+            return name.Equals("$Recycle.Bin", StringComparison.OrdinalIgnoreCase)
+            || name.Equals("System Volume Information", StringComparison.OrdinalIgnoreCase)
+            || name.Equals("Windows", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private bool TryCountItems(string rootPath, int maxCount, out int totalCount)
+        {
+            totalCount = 0;
+            Stack<string> stack = new();
+            stack.Push(rootPath);
+
+            while (stack.Count > 0)
+            {
+                string current = stack.Pop();
+
+                // 再解析ポイント（ジャンクション・シンボリックリンク）は無視
+                if (IsReparsePoint(current))
+                    continue;
+
+                // フォルダ自身
+                totalCount++;
+                if (totalCount > maxCount)
+                    return false;
+
+                string[] dirs;
+                try
+                {
+                    dirs = Directory.GetDirectories(current);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    continue;
+                }
+                catch (IOException)
+                {
+                    continue;
+                }
+
+                foreach (var dir in dirs)
+                {
+                    if (IsProtectedFolder(dir))
+                        continue;
+
+                    stack.Push(dir);
+                }
+
+                string[] files;
+                try
+                {
+                    files = Directory.GetFiles(current);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    continue;
+                }
+                catch (IOException)
+                {
+                    continue;
+                }
+
+                totalCount += files.Length;
+                if (totalCount > maxCount)
+                    return false;
+            }
+
+            return true;
         }
     }
 }
