@@ -100,6 +100,15 @@ https://takuyash.github.io/SimplefolderlauncherSite/docs.html
 本ソフトウェアを使用したことによって生じたいかなる損害についても、作者は一切の責任を負いません。  
 自己責任でご利用ください。
 
+## ライセンス・利用条件
+
+本ソフトウェアはフリーソフトです。  
+**個人利用・商用利用を問わず、無料で使用することができます。**
+
+
+ただし、本ソフトウェアを使用したことによって生じたいかなる損害についても、作者は一切の責任を負いません。  
+自己責任でご利用ください。  
+
 ## 応援について
 
 もしこのソフトウェアが役に立ったと感じたら、
@@ -229,6 +238,18 @@ To update, download the new version and overwrite the existing folder.
 ## Disclaimer
 The author assumes no responsibility for any damages resulting from the use of this software.  
 Use at your own risk.
+
+---
+
+## License and Terms of Use
+
+
+This software is freeware.  
+**It may be used free of charge for both personal and commercial purposes.**
+
+
+However, the author assumes no responsibility for any damages that may occur as a result of using this software.  
+Please use it at your own risk.  
 
 ---
 
