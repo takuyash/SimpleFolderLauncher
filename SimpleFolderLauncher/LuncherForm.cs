@@ -396,43 +396,91 @@ namespace StylishLauncherINI
         /// <param name="parentNodes"></param>
         /// <param name="recursive"></param>
         /// <param name="filter"></param>
-        private void LoadFolder(string path, TreeNodeCollection parentNodes, bool recursive, string filter = "")
+        private void LoadFolder(
+            string path,
+            TreeNodeCollection parentNodes,
+            bool recursive,
+            string filter = "")
         {
+            // システム・保護フォルダは最初から除外
+            if (IsProtectedFolder(path))
+                return;
+
+            // --- フォルダ ---
+            string[] directories;
             try
             {
-                foreach (var dir in Directory.GetDirectories(path))
+                directories = Directory.GetDirectories(path);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return;
+            }
+            catch (IOException)
+            {
+                return;
+            }
+
+            foreach (var dir in directories)
+            {
+                string dirName = Path.GetFileName(dir);
+                var folderNode = new TreeNode(dirName)
                 {
-                    string dirName = Path.GetFileName(dir);
-                    var folderNode = new TreeNode(dirName) { Tag = dir, ForeColor = Color.LightSkyBlue };
+                    Tag = dir,
+                    ForeColor = Color.LightSkyBlue
+                };
 
-                    // 子要素を読み込む
-                    LoadFolder(dir, folderNode.Nodes, false, filter);
-
-                    // フィルタ条件：フォルダ名が一致するか、子要素に一致するものがある場合
-                    if (string.IsNullOrEmpty(filter) || dirName.ToLower().Contains(filter) || folderNode.Nodes.Count > 0)
-                    {
-                        SetNodeIcon(folderNode, dir);
-                        parentNodes.Add(folderNode);
-                    }
+                // 子要素（ここも個別に安全化）
+                if (recursive)
+                {
+                    LoadFolder(dir, folderNode.Nodes, recursive, filter);
                 }
 
-                // ファイル
-                foreach (var file in Directory.GetFiles(path))
+                // フィルタ判定
+                bool match =
+                    string.IsNullOrEmpty(filter) ||
+                    dirName.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    folderNode.Nodes.Count > 0;
+
+                if (match)
                 {
-                    string fileName = Path.GetFileName(file);
-                    if (string.IsNullOrEmpty(filter) || fileName.ToLower().Contains(filter))
-                    {
-                        var fileNode = new TreeNode(fileName)
-                        {
-                            Tag = file,
-                            ForeColor = Color.FromArgb(224, 224, 224)
-                        };
-                        SetNodeIcon(fileNode, file);
-                        parentNodes.Add(fileNode);
-                    }
+                    SetNodeIcon(folderNode, dir);
+                    parentNodes.Add(folderNode);
                 }
             }
-            catch { }
+
+            // --- ファイル ---
+            string[] files;
+            try
+            {
+                files = Directory.GetFiles(path);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return;
+            }
+            catch (IOException)
+            {
+                return;
+            }
+
+            foreach (var file in files)
+            {
+                string fileName = Path.GetFileName(file);
+
+                if (string.IsNullOrEmpty(filter) ||
+                    fileName.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    var fileNode = new TreeNode(fileName)
+                    {
+                        Tag = file,
+                        ForeColor = Color.FromArgb(224, 224, 224)
+                    };
+
+                    SetNodeIcon(fileNode, file);
+                    parentNodes.Add(fileNode);
+                }
+            }
         }
 
         /// <summary>
@@ -578,6 +626,15 @@ namespace StylishLauncherINI
                 node.Toggle();
             }
         }
+
+        private bool IsProtectedFolder(string path)
+        {
+            string name = Path.GetFileName(path);
+
+            return name.Equals("$Recycle.Bin", StringComparison.OrdinalIgnoreCase)
+                || name.Equals("System Volume Information", StringComparison.OrdinalIgnoreCase);
+        }
+
     }
 
 
