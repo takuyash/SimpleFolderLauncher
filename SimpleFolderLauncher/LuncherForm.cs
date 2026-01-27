@@ -211,12 +211,32 @@ namespace StylishLauncherINI
 
             this.Shown += (s, e) =>
             {
-                // 画面の前面に持ってくるための3点セット
+
+                var mouseScreen = Screen.FromPoint(Cursor.Position);
+                this.StartPosition = FormStartPosition.Manual;
+                this.Location = new Point(
+                    mouseScreen.Bounds.Left + (mouseScreen.Bounds.Width - this.Width) / 2,
+                    mouseScreen.Bounds.Top + (mouseScreen.Bounds.Height - this.Height) / 2
+                );
+
+                // 画面の前面に持ってくる
                 this.TopMost = true;      // 一時的に最前面固定
                 this.Activate();          // フォーカスを強制
                 this.TopMost = false;     // 解除（これを行わないとずっと最前面で邪魔になる）
 
                 fileTree.Focus();
+            };
+
+            this.VisibleChanged += (s, e) =>
+            {
+                if (!this.Visible) return;
+
+                var mouseScreen = Screen.FromPoint(Cursor.Position);
+                this.StartPosition = FormStartPosition.Manual;
+                this.Location = new Point(
+                    mouseScreen.Bounds.Left + (mouseScreen.Bounds.Width - this.Width) / 2,
+                    mouseScreen.Bounds.Top + (mouseScreen.Bounds.Height - this.Height) / 2
+                );
             };
         }
 
