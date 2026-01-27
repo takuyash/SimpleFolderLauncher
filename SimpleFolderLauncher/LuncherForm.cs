@@ -209,7 +209,15 @@ namespace StylishLauncherINI
 
             ReloadTree(initialPath);
 
-            this.Shown += (s, e) => fileTree.Focus();
+            this.Shown += (s, e) =>
+            {
+                // 画面の前面に持ってくるための3点セット
+                this.TopMost = true;      // 一時的に最前面固定
+                this.Activate();          // フォーカスを強制
+                this.TopMost = false;     // 解除（これを行わないとずっと最前面で邪魔になる）
+
+                fileTree.Focus();
+            };
         }
 
         /// <summary>
