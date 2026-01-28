@@ -72,6 +72,19 @@ namespace StylishLauncherINI
         private NotifyIcon trayIcon;
         private ContextMenuStrip trayMenu;
 
+
+        [DllImport("user32.dll")]
+        static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        static extern bool AttachThreadInput(uint idAttach, uint idAttachTo, bool fAttach);
+
+        [DllImport("user32.dll")]
+        static extern uint GetWindowThreadProcessId(IntPtr hWnd, IntPtr ProcessId);
+
+        [DllImport("user32.dll")]
+        static extern IntPtr GetForegroundWindow();
+
         /// <summary>
         /// ランチャーフォーム画面
         /// </summary>
@@ -209,22 +222,10 @@ namespace StylishLauncherINI
 
             ReloadTree(initialPath);
 
+
             this.Shown += (s, e) =>
             {
-
-                var mouseScreen = Screen.FromPoint(Cursor.Position);
-                this.StartPosition = FormStartPosition.Manual;
-                this.Location = new Point(
-                    mouseScreen.Bounds.Left + (mouseScreen.Bounds.Width - this.Width) / 2,
-                    mouseScreen.Bounds.Top + (mouseScreen.Bounds.Height - this.Height) / 2
-                );
-
-                // 画面の前面に持ってくる
-                this.TopMost = true;      // 一時的に最前面固定
-                this.Activate();          // フォーカスを強制
-                this.TopMost = false;     // 解除（これを行わないとずっと最前面で邪魔になる）
-
-                fileTree.Focus();
+                BeginInvoke(new Action(ForceForeground));
             };
 
             this.VisibleChanged += (s, e) =>
@@ -238,6 +239,28 @@ namespace StylishLauncherINI
                     mouseScreen.Bounds.Top + (mouseScreen.Bounds.Height - this.Height) / 2
                 );
             };
+        }
+
+        private void ForceForeground()
+        {
+            IntPtr fg = GetForegroundWindow();
+            uint fgThread = GetWindowThreadProcessId(fg, IntPtr.Zero);
+            uint thisThread = GetWindowThreadProcessId(this.Handle, IntPtr.Zero);
+
+            // フォアグラウンドスレッドと一時的に結合
+            AttachThreadInput(thisThread, fgThread, true);
+
+            this.TopMost = true;
+            this.Show();
+            SetForegroundWindow(this.Handle);
+            this.Activate();
+            this.BringToFront();
+            this.TopMost = false;
+
+            // 結合解除
+            AttachThreadInput(thisThread, fgThread, false);
+
+            fileTree.Focus();
         }
 
         /// <summary>
