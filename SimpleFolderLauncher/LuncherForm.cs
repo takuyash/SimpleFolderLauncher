@@ -62,6 +62,7 @@ namespace StylishLauncherINI
     {
         private TreeView fileTree;
         private ContextMenuStrip nodeContextMenu;
+        private ToolStripMenuItem menuCopyPath; // 多言語化のため保持
         private List<TreeNode> flatNodeList = new List<TreeNode>();
         private ImageList iconList; // アイコンリスト
         private Label lblNoPath;
@@ -71,6 +72,7 @@ namespace StylishLauncherINI
         // タスクトレイ
         private NotifyIcon trayIcon;
         private ContextMenuStrip trayMenu;
+        private ToolStripMenuItem menuOpen, menuSetting, menuHelp, menuExit; // 多言語化のため保持
 
 
         [DllImport("user32.dll")]
@@ -132,14 +134,14 @@ namespace StylishLauncherINI
             // ================================
             trayMenu = new ContextMenuStrip();
 
-            trayMenu.Items.Add("開く", null, (s, e) =>
+            menuOpen = new ToolStripMenuItem("", null, (s, e) =>
             {
                 this.Show();
                 this.Activate();
                 fileTree.Focus();
             });
 
-            trayMenu.Items.Add("設定", null, (s, e) =>
+            menuSetting = new ToolStripMenuItem("", null, (s, e) =>
             {
                 string iniPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
 
@@ -148,9 +150,7 @@ namespace StylishLauncherINI
                 ReloadTree();
             });
 
-            trayMenu.Items.Add(new ToolStripSeparator());
-
-            trayMenu.Items.Add("ヘルプ", null, (s, e) =>
+            menuHelp = new ToolStripMenuItem("", null, (s, e) =>
             {
                 using (var help = new HelpForm())
                 {
@@ -158,12 +158,17 @@ namespace StylishLauncherINI
                 }
             });
 
-
-            trayMenu.Items.Add("終了", null, (s, e) =>
+            menuExit = new ToolStripMenuItem("", null, (s, e) =>
             {
                 trayIcon.Visible = false;
                 Application.Exit();
             });
+
+            trayMenu.Items.Add(menuOpen);
+            trayMenu.Items.Add(menuSetting);
+            trayMenu.Items.Add(new ToolStripSeparator());
+            trayMenu.Items.Add(menuHelp);
+            trayMenu.Items.Add(menuExit);
 
             trayIcon = new NotifyIcon
             {
@@ -203,7 +208,6 @@ namespace StylishLauncherINI
             lblNoPath = new Label
             {
                 Dock = DockStyle.Fill,
-                Text = "フォルダが設定されていません。\n\nタスクトレイのアプリケーションから\n「設定」を行ってください。",
                 ForeColor = Color.LightGray,
                 BackColor = Color.Transparent,
                 TextAlign = ContentAlignment.MiddleCenter,
@@ -216,10 +220,12 @@ namespace StylishLauncherINI
             this.Controls.Add(lblNoPath);
 
             nodeContextMenu = new ContextMenuStrip();
-            var copyPathItem = new ToolStripMenuItem("パスをコピー");
-            copyPathItem.Click += CopyPathItem_Click;
-            nodeContextMenu.Items.Add(copyPathItem);
+            menuCopyPath = new ToolStripMenuItem("");
+            menuCopyPath.Click += CopyPathItem_Click;
+            nodeContextMenu.Items.Add(menuCopyPath);
 
+            // 初期言語適用
+            UpdateUILanguage();
             ReloadTree(initialPath);
 
 
@@ -239,6 +245,19 @@ namespace StylishLauncherINI
                     mouseScreen.Bounds.Top + (mouseScreen.Bounds.Height - this.Height) / 2
                 );
             };
+        }
+
+        /// <summary>
+        /// UIの表示文字列を現在の言語設定に更新する
+        /// </summary>
+        private void UpdateUILanguage()
+        {
+            menuOpen.Text = LanguageManager.GetString("MenuOpen");
+            menuSetting.Text = LanguageManager.GetString("MenuSetting");
+            menuHelp.Text = LanguageManager.GetString("MenuHelp");
+            menuExit.Text = LanguageManager.GetString("MenuExit");
+            menuCopyPath.Text = LanguageManager.GetString("MenuCopyPath");
+            lblNoPath.Text = LanguageManager.GetString("LauncherNoPath");
         }
 
         private void ForceForeground()
@@ -311,6 +330,10 @@ namespace StylishLauncherINI
         /// <param name="rootPath"></param>
         private void ReloadTree(string rootPath = "")
         {
+            // 設定変更後の言語を反映
+            LanguageManager.LoadSettings();
+            UpdateUILanguage();
+
             fileTree.BeginUpdate(); // 描画停止で高速化
             fileTree.Nodes.Clear();
             flatNodeList.Clear();
@@ -669,7 +692,7 @@ namespace StylishLauncherINI
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"実行に失敗しました: {ex.Message}");
+                    MessageBox.Show($"{LanguageManager.GetString("MsgSaveFailed")}{ex.Message}");
                 }
             }
             else if (Directory.Exists(path))

@@ -16,10 +16,11 @@ namespace StylishLauncherINI
         private const string HelpUrl = "https://takuyash.github.io/SimplefolderlauncherSite/docs.html";
         private const string LicenseUrl = "https://github.com/takuyash/SimpleFolderLauncher/blob/main/LICENSE";
         private Label _updateLabel;
+        private FlowLayoutPanel panel;
 
         public HelpForm()
         {
-            this.Text = "ヘルプ / バージョン情報";
+            this.Text = LanguageManager.GetString("HelpTitle");
             this.Size = new Size(420, 260);
             this.StartPosition = FormStartPosition.CenterParent;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -27,7 +28,7 @@ namespace StylishLauncherINI
             this.MinimizeBox = false;
 
 
-            var panel = new FlowLayoutPanel()
+            panel = new FlowLayoutPanel()
             {
                 Dock = DockStyle.Fill,
                 FlowDirection = FlowDirection.TopDown,
@@ -52,9 +53,9 @@ namespace StylishLauncherINI
                 Margin = new Padding(0, 5, 0, 15)
             });
 
-            panel.Controls.Add(CreateLink("GitHub リポジトリ", GitHubRepoUrl));
-            panel.Controls.Add(CreateLink("ヘルプ / 使い方", HelpUrl));
-            panel.Controls.Add(CreateLink("ライセンス", LicenseUrl));
+            panel.Controls.Add(CreateLink(LanguageManager.GetString("HelpRepo"), GitHubRepoUrl));
+            panel.Controls.Add(CreateLink(LanguageManager.GetString("HelpUsage"), HelpUrl));
+            panel.Controls.Add(CreateLink(LanguageManager.GetString("HelpLicense"), LicenseUrl));
 
             _updateLabel = new Label()
             {
@@ -68,6 +69,20 @@ namespace StylishLauncherINI
 
             // 非同期でチェック
             this.Load += async (s, e) => await CheckForUpdateAsync(panel);
+
+            LanguageManager.LanguageChanged += UpdateUI;
+        }
+
+        private void UpdateUI()
+        {
+            this.Text = LanguageManager.GetString("HelpTitle");
+            // リンクのテキスト更新（簡易化のため再生成はせず構造維持）
+            if (panel.Controls.Count >= 5)
+            {
+                ((LinkLabel)panel.Controls[2]).Text = LanguageManager.GetString("HelpRepo");
+                ((LinkLabel)panel.Controls[3]).Text = LanguageManager.GetString("HelpUsage");
+                ((LinkLabel)panel.Controls[4]).Text = LanguageManager.GetString("HelpLicense");
+            }
         }
 
         private string GetVersion()
@@ -121,7 +136,7 @@ namespace StylishLauncherINI
                 {
                     var link = new LinkLabel()
                     {
-                        Text = $"新しいバージョンがあります（v{latest}）",
+                        Text = string.Format(LanguageManager.GetString("HelpUpdate"), latest),
                         AutoSize = true,
                         LinkColor = Color.DarkRed
                     };
@@ -144,5 +159,10 @@ namespace StylishLauncherINI
             }
         }
 
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            LanguageManager.LanguageChanged -= UpdateUI;
+            base.OnFormClosed(e);
+        }
     }
 }

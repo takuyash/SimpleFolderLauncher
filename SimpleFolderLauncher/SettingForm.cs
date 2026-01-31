@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace StylishLauncherINI
 {
@@ -13,6 +14,10 @@ namespace StylishLauncherINI
         private Button btnBrowse;
         private Button btnSave;
         private NumericUpDown numFontSize;
+        private ComboBox cmbLang;
+        private Label lblPath;
+        private Label lblFont;
+        private Label lblLang;
 
         private string iniPath;
 
@@ -20,20 +25,20 @@ namespace StylishLauncherINI
         {
             iniPath = iniFilePath;
 
-            this.Text = "設定";
-            this.Size = new System.Drawing.Size(450, 200);
+            this.Text = LanguageManager.GetString("SettingTitle");
+            this.Size = new System.Drawing.Size(450, 240);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
 
-            var lbl = new Label()
+            lblPath = new Label()
             {
-                Text = "フォルダのパス:",
+                Text = LanguageManager.GetString("SettingPath"),
                 Left = 10,
                 Top = 10,
                 Width = 400
             };
-            this.Controls.Add(lbl);
+            this.Controls.Add(lblPath);
 
             txtPath = new TextBox()
             {
@@ -45,7 +50,7 @@ namespace StylishLauncherINI
 
             btnBrowse = new Button()
             {
-                Text = "参照...",
+                Text = LanguageManager.GetString("SettingBrowse"),
                 Left = 340,
                 Top = 33,
                 Width = 80
@@ -53,9 +58,9 @@ namespace StylishLauncherINI
             btnBrowse.Click += BtnBrowse_Click;
             this.Controls.Add(btnBrowse);
 
-            var lblFont = new Label()
+            lblFont = new Label()
             {
-                Text = "文字サイズ:",
+                Text = LanguageManager.GetString("SettingFontSize"),
                 Left = 10,
                 Top = 75,
                 Width = 80
@@ -64,7 +69,7 @@ namespace StylishLauncherINI
 
             numFontSize = new NumericUpDown()
             {
-                Left = 90,
+                Left = 110,
                 Top = 73,
                 Width = 60,
                 Minimum = 8,
@@ -73,11 +78,36 @@ namespace StylishLauncherINI
             };
             this.Controls.Add(numFontSize);
 
+            lblLang = new Label()
+            {
+                Text = LanguageManager.GetString("SettingLang"),
+                Left = 10,
+                Top = 115,
+                Width = 100
+            };
+            this.Controls.Add(lblLang);
+
+            cmbLang = new ComboBox()
+            {
+                Left = 110,
+                Top = 113,
+                Width = 100,
+                DropDownStyle = ComboBoxStyle.DropDownList
+            };
+            cmbLang.Items.Add("ja");
+            cmbLang.Items.Add("en");
+            cmbLang.SelectedIndex = LanguageManager.CurrentLanguage == "en" ? 1 : 0;
+            cmbLang.SelectedIndexChanged += (s, e) => {
+                LanguageManager.SaveLanguage(cmbLang.Text);
+                UpdateUI();
+            };
+            this.Controls.Add(cmbLang);
+
             btnSave = new Button()
             {
-                Text = "保存",
+                Text = LanguageManager.GetString("SettingSave"),
                 Left = 330,
-                Top = 110,
+                Top = 155,
                 Width = 90
             };
             btnSave.Click += BtnSave_Click;
@@ -98,11 +128,21 @@ namespace StylishLauncherINI
             }
         }
 
+        private void UpdateUI()
+        {
+            this.Text = LanguageManager.GetString("SettingTitle");
+            lblPath.Text = LanguageManager.GetString("SettingPath");
+            btnBrowse.Text = LanguageManager.GetString("SettingBrowse");
+            lblFont.Text = LanguageManager.GetString("SettingFontSize");
+            lblLang.Text = LanguageManager.GetString("SettingLang");
+            btnSave.Text = LanguageManager.GetString("SettingSave");
+        }
+
         private void BtnBrowse_Click(object sender, EventArgs e)
         {
             using (var dialog = new FolderBrowserDialog())
             {
-                dialog.Description = "フォルダを選択してください";
+                dialog.Description = LanguageManager.GetString("DialogSelectDir");
 
                 // 既に入力されている場合は初期フォルダに設定
                 if (Directory.Exists(txtPath.Text))
@@ -124,32 +164,28 @@ namespace StylishLauncherINI
             // ① 空チェック
             if (string.IsNullOrEmpty(folder))
             {
-                MessageBox.Show("パスを入力してください。");
+                MessageBox.Show(LanguageManager.GetString("MsgPathReq"));
                 return;
             }
 
             // ② 存在チェック
             if (!Directory.Exists(folder))
             {
-                MessageBox.Show("指定されたフォルダは存在しません。");
+                MessageBox.Show(LanguageManager.GetString("MsgDirNotExists"));
                 return;
             }
 
             // ③ ドライブ直下・システムフォルダチェック
             if (IsInvalidRootFolder(folder))
             {
-                MessageBox.Show(
-                    "ドライブ直下やシステムフォルダは登録できません。\n" +
-                    "サブフォルダを指定してください。");
+                MessageBox.Show(LanguageManager.GetString("MsgSystemDirError"));
                 return;
             }
 
             // ④ アクセス権チェック
             if (!CanAccessFolder(folder))
             {
-                MessageBox.Show(
-                    "このフォルダにはアクセス権がありません。\n" +
-                    "別のフォルダを指定してください。");
+                MessageBox.Show(LanguageManager.GetString("MsgAccessDenied"));
                 return;
             }
 
@@ -160,10 +196,7 @@ namespace StylishLauncherINI
             if (!TryCountItems(folder, MAX_ITEMS, out int count))
             {
                 MessageBox.Show(
-                    $"フォルダ内の項目数が多すぎます。\n\n" +
-                    $"上限 : {MAX_ITEMS}\n" +
-                    $"検出 : {count} 以上\n\n" +
-                    $"より小さなフォルダを指定してください。");
+                    string.Format(LanguageManager.GetString("MsgTooManyItems"), MAX_ITEMS, count));
                 return;
             }
 
@@ -171,10 +204,8 @@ namespace StylishLauncherINI
             if (count > WARNING_ITEMS)
             {
                 var result = MessageBox.Show(
-                    $"このフォルダには {count} 個の項目があります。\n" +
-                    $"動作が重くなる可能性があります。\n\n" +
-                    $"それでも登録しますか？",
-                    "確認",
+                    string.Format(LanguageManager.GetString("MsgHeavyConfirm"), count),
+                    LanguageManager.GetString("MsgConfirmTitle"),
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning);
 
@@ -187,14 +218,14 @@ namespace StylishLauncherINI
             {
                 File.WriteAllText(
                     iniPath,
-                    $"LauncherFolder={folder}\nFontSize={numFontSize.Value}");
+                    $"LauncherFolder={folder}\nFontSize={numFontSize.Value}\nLanguage={cmbLang.Text}");
 
-                MessageBox.Show("保存しました。");
+                MessageBox.Show(LanguageManager.GetString("MsgSaveSuccess"));
                 this.Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("保存に失敗しました: " + ex.Message);
+                MessageBox.Show(LanguageManager.GetString("MsgSaveFailed") + ex.Message);
             }
         }
 
