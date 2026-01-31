@@ -14,7 +14,7 @@ Windows 11 で「フォルダをタスクバーにピン留めできなくなっ
 ## 画面動作
    <img src="screenshots/overview.gif" width="40%">  
 
-## 動作環境s
+## 動作環境
 Windows 11
 
 ## 使い方（クイックスタート）
@@ -27,6 +27,7 @@ Windows 11
    <img src="screenshots/taskTray.png" height="10%">  
 
 2. タスクトレイのアイコンを右クリックして、設定画面が開けます  
+   言語は日本語と英語が選べるため好きなほうを選んでください。
    ランチャーに表示したいフォルダのパスを設定します。  
    1つのフォルダによく使うアプリやフォルダ、ファイルのショートカットを集めて置き、そのフォルダのパスを設定してください。  
    <img src="screenshots/setting.png" width="30%" >  
@@ -156,10 +157,11 @@ This software is **freeware** and can be used at no cost.
    <img src="screenshots/taskTray.png" height="10%">
 
 2. Right-click the system tray icon to open the settings window.  
+   You can choose between Japanese and English as the language, so please choose whichever you prefer.  
    Set the path of the folder you want to display in the launcher.  
    Put shortcuts to frequently used applications, folders, or files into a single folder, and set that folder’s path here.  
 
-   <img src="screenshots/setting.png" width="30%">
+   <img src="screenshots/setting_en.png" width="30%">
 
 3. Launch the launcher using **double Shift** or **Ctrl + Shift + I**.  
    <img src="screenshots/launcher.png" width="40%">

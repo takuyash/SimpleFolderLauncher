@@ -94,7 +94,7 @@ namespace StylishLauncherINI
                 Width = 100,
                 DropDownStyle = ComboBoxStyle.DropDownList
             };
-            cmbLang.Items.Add("ja");
+            cmbLang.Items.Add("日本語");
             cmbLang.Items.Add("en");
             cmbLang.SelectedIndex = LanguageManager.CurrentLanguage == "en" ? 1 : 0;
             cmbLang.SelectedIndexChanged += (s, e) => {
