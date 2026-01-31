@@ -127,6 +127,8 @@ GitHub の ⭐ Star や 👀 Watch を付けてもらえるととても励みに
 
 
 
+
+
 # SimpleFolderLauncher
 
 An ultra-lightweight, ultra-fast folder launcher that uses Windows folders as-is.
