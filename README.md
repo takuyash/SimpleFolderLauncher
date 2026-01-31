@@ -85,6 +85,9 @@ https://takuyash.github.io/SimplefolderlauncherSite/docs.html
 ### 9. 文字サイズの変更も可能  
 ランチャー画面の文字サイズを変更することができます。
 
+### 10. 日本語と英語で使用可能  
+設定画面で日本語と英語の切り替えが可能です。
+
 ## アプリ更新方法
 更新時は新しいバージョンをダウンロードして既存フォルダに上書きしてください。  
 アップデート方法  
@@ -95,7 +98,7 @@ https://takuyash.github.io/SimplefolderlauncherSite/docs.html
 
 ## その他
 ・スタートアップに登録しておくと自動で起動して常駐するので起動忘れの心配がないので設定をお勧めします。  
-・外部キーボードを使用している場合にテンキー入力する場合は、NumLockをONにしてください。
+・外部キーボードを使用している場合にテンキー入力する場合は、NumLockをONにしてください。  
 ・Shiftキーを連続で5回以上押すと、Windowsの固定キー機能の確認ダイアログが表示される場合があります。  
   これはOS標準の機能で、本アプリの不具合ではありません。  
 
@@ -221,11 +224,14 @@ Even when upgrading to the latest version, you only need to set the folder path 
 ### 9. Font size can be adjusted
 The text size on the launcher screen can be changed.  
 
+### 10. Available in Japanese and English
+You can switch between Japanese and English in the settings screen.  
+
 ---
 
 ## Updating the Application
 
-To update, download the new version and overwrite the existing folder.
+To update, download the new version and overwrite the existing folder.  
 
 **Update steps:**
 1. Exit SimpleFolderLauncher  
@@ -236,16 +242,16 @@ To update, download the new version and overwrite the existing folder.
 ---
 
 ## Notes
-- Registering the app in Windows Startup is recommended so it launches automatically and is always available.
-- When using an external keyboard, make sure **NumLock** is ON to use the numeric keypad.
+- Registering the app in Windows Startup is recommended so it launches automatically and is always available.  
+- When using an external keyboard, make sure **NumLock** is ON to use the numeric keypad.  
 - Pressing the Shift key five times or more may trigger the Windows Sticky Keys confirmation dialog.  
-  This is a standard Windows feature and **not a bug** in this application.
+  This is a standard Windows feature and **not a bug** in this application.  
 
 ---
 
 ## Disclaimer
 The author assumes no responsibility for any damages resulting from the use of this software.  
-Use at your own risk.
+Use at your own risk.  
 
 ---
 
@@ -262,6 +268,6 @@ Please use it at your own risk.
 
 ## Support
 If you find this software helpful,  
-a ⭐ **Star** or 👀 **Watch** on GitHub would be greatly appreciated and very motivating!
+a ⭐ **Star** or 👀 **Watch** on GitHub would be greatly appreciated and very motivating!  
 
-Feedback and issues are always welcome.
+Feedback and issues are always welcome.  
