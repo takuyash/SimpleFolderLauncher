@@ -28,7 +28,7 @@ Windows 11
 
 2. タスクトレイのアイコンを右クリックして、設定画面が開けます  
    言語は日本語と英語が選べるため好きなほうを選んでください。
-   <img src="screenshots/taskTray2.png" width="40%">  
+   <img src="screenshots/tasktray2.png" width="40%">  
    ランチャーに表示したいフォルダのパスを設定します。  
    1つのフォルダによく使うアプリやフォルダ、ファイルのショートカットを集めて置き、そのフォルダのパスを設定してください。  
    <img src="screenshots/setting.png" width="30%" >  
@@ -164,7 +164,7 @@ This software is **freeware** and can be used at no cost.
 
 2. Right-click the system tray icon to open the settings window.  
    You can choose between Japanese and English as the language, so please choose whichever you prefer.  
-   <img src="screenshots/taskTray2_en.png" width="40%">  
+   <img src="screenshots/tasktray2_en.png" width="40%">  
    Set the path of the folder you want to display in the launcher.  
    Put shortcuts to frequently used applications, folders, or files into a single folder, and set that folder’s path here.  
 
