@@ -181,7 +181,7 @@ This software is **freeware** and can be used at no cost.
 - Open the launcher with **double Shift** or **Ctrl + Shift + I**.
 
 Detailed instructions are available here:  
-https://takuyash.github.io/SimplefolderlauncherSite/docs.html
+https://takuyash.github.io/SimplefolderlauncherSite/en/docs.html
 
 ---
 
