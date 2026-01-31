@@ -14,7 +14,7 @@ Windows 11 で「フォルダをタスクバーにピン留めできなくなっ
 ## 画面動作
    <img src="screenshots/overview.gif" width="40%">  
 
-## 動作環境
+## 動作環境s
 Windows 11
 
 ## 使い方（クイックスタート）
@@ -46,12 +46,12 @@ https://takuyash.github.io/SimplefolderlauncherSite/docs.html
 
 
 ## 特徴
-1. 設定不要。フォルダ構造がそのままランチャーとなる  
+### 1. 設定不要。フォルダ構造がそのままランチャーとなる  
 お気に入りフォルダをエクスプローラーで作るだけでランチャーに自動反映されます。  
 そのため、アプリ側で“登録作業”は1つだけ。  
 フォルダのパスを設定するだけで使い始められるため、高速に利用開始することができます。
 
-2. 0–9 + A–Z のキー割り当てで超高速起動  
+### 2. 0–9 + A–Z のキー割り当てで超高速起動  
 表示された項目には自動で 0〜9、A〜Z のキーが割り当てられます。   
 ランチャー表示後は 該当キーを押すだけで即フォルダオープンします。  
 そのためキーボードだけで操作が完結します。
@@ -60,26 +60,29 @@ https://takuyash.github.io/SimplefolderlauncherSite/docs.html
 ・マウスでクリックして開く  
 ・エンターで開く  
 
-3. Shift 2回連続で簡単に起動  
+### 3. Shift 2回連続で簡単に起動  
 ランチャー画面は、Shift 2回連続 もしくは Ctrl + Shift + i で表示できます。   
 
-4. シンプル高速・軽量動作  
+### 4. シンプル高速・軽量動作  
 ・シンプルなUI  
 ・描画コスト極低  
 ・ポータブル EXE で動作  
 ・起動、アイテムクリックが極めて高速  
 
-5. キーワード検索機能  
+### 5. キーワード検索機能  
 キーワードによる検索ができます。
 
-6. Right-Click メニュー  
+### 6. Right-Click メニュー  
 各項目を右クリックするとパスをコピーできます。  
 
-7. escキーでランチャー画面を閉じる  
+### 7. escキーでランチャー画面を閉じる  
 ランチャー画面を閉じる時もescキーですぐに閉じることができます。
 
-8. アプリの最新版への移行も一瞬  
+### 8. アプリの最新版への移行も一瞬  
 最新版をダウンロードして移行する場合も、フォルダのパスを設定するだけなので高速に使い始めることができます。
+
+### 9. 文字サイズの変更も可能  
+ランチャー画面の文字サイズを変更することができます。
 
 ## アプリ更新方法
 更新時は新しいバージョンをダウンロードして既存フォルダに上書きしてください。  
@@ -185,7 +188,7 @@ This allows you to start using the launcher immediately.
 ### 2. Ultra-Fast Launching with 0–9 + A–Z Key Assignments
 Each displayed item is automatically assigned a key from 0–9 or A–Z.  
 After the launcher appears, just press the corresponding key to open the folder instantly.  
-Keyboard-only operation is fully supported.
+Keyboard-only operation is fully supported.  
 
 You can also open items using:
 - Arrow keys (↑ ↓) to move the cursor  
@@ -193,7 +196,7 @@ You can also open items using:
 - Enter key  
 
 ### 3. Easy Activation with Double Shift
-The launcher can be displayed using **double Shift** or **Ctrl + Shift + I**.
+The launcher can be displayed using **double Shift** or **Ctrl + Shift + I**.  
 
 ### 4. Simple, Fast, and Lightweight
 - Clean and minimal UI  
@@ -202,16 +205,19 @@ The launcher can be displayed using **double Shift** or **Ctrl + Shift + I**.
 - Very fast startup and item launching  
 
 ### 5. Search Function
-Search items by keyword.
+Search items by keyword.  
 
 ### 6. Right-Click Menu
-Right-click an item to copy its path.
+Right-click an item to copy its path.  
 
 ### 7. Close with the ESC Key
-Press `Esc` to instantly close the launcher.
+Press `Esc` to instantly close the launcher.  
 
 ### 8. Instant Migration to New Versions
-Even when upgrading to the latest version, you only need to set the folder path again to resume use immediately.
+Even when upgrading to the latest version, you only need to set the folder path again to resume use immediately.  
+
+### 9. Font size can be adjusted
+The text size on the launcher screen can be changed.  
 
 ---
 
