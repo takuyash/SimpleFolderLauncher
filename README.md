@@ -162,7 +162,7 @@ This software is **freeware** and can be used at no cost.
 
 2. Right-click the system tray icon to open the settings window.  
    You can choose between Japanese and English as the language, so please choose whichever you prefer.  
-   <img src="screenshots/taskTray2.png" width="40%">  
+   <img src="screenshots/taskTray2_en.png" width="40%">  
    Set the path of the folder you want to display in the launcher.  
    Put shortcuts to frequently used applications, folders, or files into a single folder, and set that folder’s path here.  
 
