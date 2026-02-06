@@ -43,15 +43,33 @@ namespace StylishLauncherINI
 
         private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
-        // --- Fields ---
+        // フィールド
         private static IntPtr _hookID = IntPtr.Zero;
         private static LowLevelKeyboardProc _proc = HookCallback;
         private static DateTime _lastShiftTime = DateTime.MinValue;
         private const int DOUBLE_PRESS_MS = 300;
         private static LauncherForm _launcher;
 
-        // 【重要】長押し判定用のフラグ
+        // 長押し判定用のフラグ
         private static bool _isShiftPressed = false;
+
+        private static string IniPath =>
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
+
+        /// <summary>
+        /// ホットキー有効判定（即時反映）
+        /// </summary>
+        private static bool IsHotKeyEnabled()
+        {
+            if (!File.Exists(IniPath)) return true;
+
+            var ini = IniHelper.ReadIni(IniPath);
+            if (!ini.ContainsKey("EnableHotKey")) return true;
+
+            return bool.TryParse(ini["EnableHotKey"], out bool enabled)
+                ? enabled
+                : true;
+        }
 
         [STAThread]
         static void Main()
@@ -73,6 +91,7 @@ namespace StylishLauncherINI
             RegisterHotKey(messageWindow.Handle, HOTKEY_ID_CTRL_SHIFT_I, MOD_CONTROL | MOD_SHIFT, (int)Keys.I);
             messageWindow.LauncherRequested += (s, e) =>
             {
+                if (!IsHotKeyEnabled()) return;
                 ShowLauncher();
             };
 
@@ -96,7 +115,7 @@ namespace StylishLauncherINI
         {
             if (_launcher == null) return;
             if (_launcher.IsDisposed) return;
-            if (_launcher.Visible) return; 
+            if (_launcher.Visible) return;
 
             _launcher.Show();
             _launcher.Activate();
@@ -107,12 +126,19 @@ namespace StylishLauncherINI
             using (Process curProcess = Process.GetCurrentProcess())
             using (ProcessModule curModule = curProcess.MainModule)
             {
-                return SetWindowsHookEx(WH_KEYBOARD_LL, proc, GetModuleHandle(curModule.ModuleName), 0);
+                return SetWindowsHookEx(
+                    WH_KEYBOARD_LL,
+                    proc,
+                    GetModuleHandle(curModule.ModuleName),
+                    0);
             }
         }
 
         private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
+            if (!IsHotKeyEnabled())
+                return CallNextHookEx(_hookID, nCode, wParam, lParam);
+
             if (nCode >= 0)
             {
                 int vkCode = Marshal.ReadInt32(lParam);
@@ -155,7 +181,6 @@ namespace StylishLauncherINI
                     }
                     else
                     {
-                        // Shift以外のキーが押されたらリセット
                         _lastShiftTime = DateTime.MinValue;
                     }
                 }
@@ -166,11 +191,15 @@ namespace StylishLauncherINI
         private class MessageWindow : NativeWindow
         {
             public event EventHandler LauncherRequested;
-            public MessageWindow() { CreateHandle(new CreateParams()); }
+            public MessageWindow()
+            {
+                CreateHandle(new CreateParams());
+            }
 
             protected override void WndProc(ref Message m)
             {
-                if (m.Msg == WM_HOTKEY && m.WParam.ToInt32() == HOTKEY_ID_CTRL_SHIFT_I)
+                if (m.Msg == WM_HOTKEY &&
+                    m.WParam.ToInt32() == HOTKEY_ID_CTRL_SHIFT_I)
                 {
                     LauncherRequested?.Invoke(this, EventArgs.Empty);
                 }

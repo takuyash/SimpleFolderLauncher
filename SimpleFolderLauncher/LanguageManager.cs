@@ -70,7 +70,8 @@ namespace StylishLauncherINI
             { "MsgConfirmTitle", "確認" },
             { "MsgSaveSuccess", "保存しました。" },
             { "MsgSaveFailed", "保存に失敗しました: " },
-            { "DialogSelectDir", "フォルダを選択してください" }
+            { "DialogSelectDir", "フォルダを選択してください" },
+            { "SettingEnableHotkey", "ホットキーを有効にする" }
         };
 
         private static readonly Dictionary<string, string> English = new()
@@ -101,7 +102,9 @@ namespace StylishLauncherINI
             { "MsgConfirmTitle", "Confirm" },
             { "MsgSaveSuccess", "Saved successfully." },
             { "MsgSaveFailed", "Failed to save: " },
-            { "DialogSelectDir", "Select a folder" }
+            { "DialogSelectDir", "Select a folder" },
+            { "SettingEnableHotkey", "Enable hotkey" },
+
         };
     }
 }

@@ -15,6 +15,7 @@ namespace StylishLauncherINI
         private Button btnSave;
         private NumericUpDown numFontSize;
         private ComboBox cmbLang;
+        private CheckBox chkEnableHotKey;
         private Label lblPath;
         private Label lblFont;
         private Label lblLang;
@@ -26,7 +27,7 @@ namespace StylishLauncherINI
             iniPath = iniFilePath;
 
             this.Text = LanguageManager.GetString("SettingTitle");
-            this.Size = new System.Drawing.Size(450, 240);
+            this.Size = new System.Drawing.Size(450, 280);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -103,11 +104,20 @@ namespace StylishLauncherINI
             };
             this.Controls.Add(cmbLang);
 
+            chkEnableHotKey = new CheckBox()
+            {
+                Left = 10,
+                Top = 150,
+                Width = 300,
+                Text = LanguageManager.GetString("SettingEnableHotkey")
+            };
+            this.Controls.Add(chkEnableHotKey);
+
             btnSave = new Button()
             {
                 Text = LanguageManager.GetString("SettingSave"),
                 Left = 330,
-                Top = 155,
+                Top = 190,
                 Width = 90
             };
             btnSave.Click += BtnSave_Click;
@@ -117,14 +127,31 @@ namespace StylishLauncherINI
             if (File.Exists(iniPath))
             {
                 var ini = IniHelper.ReadIni(iniPath);
+
                 if (ini.ContainsKey("LauncherFolder"))
                 {
                     txtPath.Text = ini["LauncherFolder"];
                 }
-                if (ini.ContainsKey("FontSize") && decimal.TryParse(ini["FontSize"], out decimal fs))
+                if (ini.ContainsKey("FontSize") &&
+                    decimal.TryParse(ini["FontSize"], out decimal fs))
                 {
-                    numFontSize.Value = Math.Max(numFontSize.Minimum, Math.Min(numFontSize.Maximum, fs));
+                    numFontSize.Value = Math.Max(
+                        numFontSize.Minimum,
+                        Math.Min(numFontSize.Maximum, fs));
                 }
+                if (ini.ContainsKey("EnableHotKey") &&
+                    bool.TryParse(ini["EnableHotKey"], out bool enabled))
+                {
+                    chkEnableHotKey.Checked = enabled;
+                }
+                else
+                {
+                    chkEnableHotKey.Checked = true;
+                }
+            }
+            else
+            {
+                chkEnableHotKey.Checked = true;
             }
         }
 
@@ -136,6 +163,7 @@ namespace StylishLauncherINI
             lblFont.Text = LanguageManager.GetString("SettingFontSize");
             lblLang.Text = LanguageManager.GetString("SettingLang");
             btnSave.Text = LanguageManager.GetString("SettingSave");
+            chkEnableHotKey.Text = LanguageManager.GetString("chkEnableHotKey");
         }
 
         private void BtnBrowse_Click(object sender, EventArgs e)
@@ -218,7 +246,10 @@ namespace StylishLauncherINI
             {
                 File.WriteAllText(
                     iniPath,
-                    $"LauncherFolder={folder}\nFontSize={numFontSize.Value}\nLanguage={cmbLang.Text}");
+                    $"LauncherFolder={folder}\n" +
+                    $"FontSize={numFontSize.Value}\n" +
+                    $"Language={cmbLang.Text}\n" +
+                    $"EnableHotKey={chkEnableHotKey.Checked}");
 
                 MessageBox.Show(LanguageManager.GetString("MsgSaveSuccess"));
                 this.Close();
@@ -261,7 +292,7 @@ namespace StylishLauncherINI
             }
             catch
             {
-                return true; // 属性取得できない = 危険
+                return true;
             }
         }
 
@@ -269,10 +300,9 @@ namespace StylishLauncherINI
         {
             string name = Path.GetFileName(path.TrimEnd('\\'));
 
-
             return name.Equals("$Recycle.Bin", StringComparison.OrdinalIgnoreCase)
-            || name.Equals("System Volume Information", StringComparison.OrdinalIgnoreCase)
-            || name.Equals("Windows", StringComparison.OrdinalIgnoreCase);
+                || name.Equals("System Volume Information", StringComparison.OrdinalIgnoreCase)
+                || name.Equals("Windows", StringComparison.OrdinalIgnoreCase);
         }
 
         private bool TryCountItems(string rootPath, int maxCount, out int totalCount)
