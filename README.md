@@ -41,7 +41,7 @@ Windows 11
 ## 起動方法
 ・exeを実行すると、タスクトレイに常駐します。  
 ・タスクトレイのアイコンを右クリックして、設定画面が開けます。  
-・ランチャー画面は、Shift 2回連続 もしくは Ctrl + Shift + i で表示できます。
+・ランチャー画面は、デフォルトではShift 2回連続 (設定で変更できます)もしくは Ctrl + Shift + i で表示できます。  
 
 詳細な手順は下記に記載  
 https://takuyash.github.io/SimplefolderlauncherSite/docs.html
@@ -63,7 +63,9 @@ https://takuyash.github.io/SimplefolderlauncherSite/docs.html
 ・エンターで開く  
 
 ### 3. Shift 2回連続で簡単に起動  
-ランチャー画面は、Shift 2回連続 もしくは Ctrl + Shift + i で表示できます。   
+ランチャー画面は、Shift 2回連続 もしくは Ctrl + Shift + i で表示できます。  
+デフォルトではShiftキー2回連続ですが、キーの種類と回数は設定で変更できます。  
+また、ホットキーでの起動のオンオフの変更もできます。  
 
 ### 4. シンプル高速・軽量動作  
 ・シンプルなUI  
@@ -88,6 +90,9 @@ https://takuyash.github.io/SimplefolderlauncherSite/docs.html
 
 ### 10. 日本語と英語で使用可能  
 設定画面で日本語と英語の切り替えが可能です。
+
+### 11. ホットキーのオンオフ/キーの種類、連打回数の変更が可能  
+設定画面でホットキーのオンオフ/キーの種類、連打回数の変更が可能です。  
 
 ## アプリ更新方法
 更新時は新しいバージョンをダウンロードして既存フォルダに上書きしてください。  
@@ -131,14 +136,14 @@ GitHub の ⭐ Star や 👀 Watch を付けてもらえるととても励みに
 
 # SimpleFolderLauncher
 
-An ultra-lightweight, ultra-fast folder launcher that uses Windows folders as-is.
+An ultra-lightweight and ultra-fast folder launcher that uses Windows folders as-is.
 
-SimpleFolderLauncher allows you to use any Windows folder *directly as a launcher*.  
-It is an ultra-lightweight, ultra-fast, zero-configuration folder launcher.
+SimpleFolderLauncher allows you to use any Windows folder **directly as a launcher**.  
+It is an ultra-lightweight, ultra-fast, and minimal-setup folder launcher.
 
 This tool was created to solve the issue in **Windows 11 where folders can no longer be pinned to the taskbar**.  
-Because it requires only a single setting to get started, it’s ideal for busy people who don’t have time for complicated setup.  
-If you already had folders pinned to the taskbar before, you can continue using them seamlessly with this launcher.
+Because only a single setting is required to start using it, this launcher is especially recommended for busy users who don’t have time for complicated setup.  
+If you already had folders pinned to the taskbar, you can continue using them as-is with this launcher.
 
 This software is **freeware** and can be used at no cost.
 
@@ -146,6 +151,8 @@ This software is **freeware** and can be used at no cost.
 
 ## Demo
 <img src="screenshots/overview.gif" width="40%">
+
+---
 
 ## System Requirements
 - Windows 11
@@ -159,28 +166,29 @@ This software is **freeware** and can be used at no cost.
 
    <img src="screenshots/decompress.png" width="40%">
 
-1. Run the `.exe` file and it will reside in the system tray.  
+1. Run the `.exe` file and the application will stay resident in the system tray.  
    <img src="screenshots/taskTray.png" height="10%">
 
 2. Right-click the system tray icon to open the settings window.  
-   You can choose between Japanese and English as the language, so please choose whichever you prefer.  
+   You can select either Japanese or English as the display language.  
    <img src="screenshots/tasktray2_en.png" width="40%">  
+
    Set the path of the folder you want to display in the launcher.  
-   Put shortcuts to frequently used applications, folders, or files into a single folder, and set that folder’s path here.  
+   Collect shortcuts to frequently used applications, folders, or files into a single folder, and specify that folder’s path.  
 
    <img src="screenshots/setting_en.png" width="30%">
 
-3. Launch the launcher using **double Shift** or **Ctrl + Shift + I**.  
+3. Open the launcher using **double Shift** or **Ctrl + Shift + I**.  
    <img src="screenshots/launcher.png" width="40%">
 
 4. Press the assigned key (0–9 / A–Z) to instantly open the corresponding folder.
 
 ---
 
-## How It Works
-- Running the `.exe` places the app in the system tray.
-- Right-click the tray icon to open the settings window.
-- Open the launcher with **double Shift** or **Ctrl + Shift + I**.
+## How to Launch
+- Running the `.exe` file places the app in the system tray.  
+- Right-click the tray icon to open the settings window.  
+- By default, the launcher can be opened with **double Shift** (configurable) or **Ctrl + Shift + I**.
 
 Detailed instructions are available here:  
 https://takuyash.github.io/SimplefolderlauncherSite/en/docs.html
@@ -189,15 +197,15 @@ https://takuyash.github.io/SimplefolderlauncherSite/en/docs.html
 
 ## Features
 
-### 1. Almost No Setup — Your Folder Structure Becomes the Launcher
-Simply create your favorite folders in Windows Explorer and they are automatically reflected in the launcher.  
-Only one registration step is required: setting the folder path.  
-This allows you to start using the launcher immediately.
+### 1. No Setup Required — Your Folder Structure Becomes the Launcher
+Simply create your favorite folder structure in Windows Explorer, and it will be reflected in the launcher automatically.  
+Only one setup step is required: setting the folder path.  
+This allows you to start using the launcher immediately and efficiently.
 
 ### 2. Ultra-Fast Launching with 0–9 + A–Z Key Assignments
-Each displayed item is automatically assigned a key from 0–9 or A–Z.  
-After the launcher appears, just press the corresponding key to open the folder instantly.  
-Keyboard-only operation is fully supported.  
+Displayed items are automatically assigned keys from **0–9 and A–Z**.  
+Once the launcher appears, pressing the corresponding key opens the folder instantly.  
+All operations can be completed using only the keyboard.  
 
 You can also open items using:
 - Arrow keys (↑ ↓) to move the cursor  
@@ -206,6 +214,8 @@ You can also open items using:
 
 ### 3. Easy Activation with Double Shift
 The launcher can be displayed using **double Shift** or **Ctrl + Shift + I**.  
+By default, it uses double Shift, but both the key type and the number of presses can be changed in the settings.  
+You can also enable or disable hotkey activation entirely.
 
 ### 4. Simple, Fast, and Lightweight
 - Clean and minimal UI  
@@ -213,28 +223,30 @@ The launcher can be displayed using **double Shift** or **Ctrl + Shift + I**.
 - Portable EXE  
 - Very fast startup and item launching  
 
-### 5. Search Function
-Search items by keyword.  
+### 5. Keyword Search
+Items can be searched by keyword.  
 
 ### 6. Right-Click Menu
 Right-click an item to copy its path.  
 
-### 7. Close with the ESC Key
+### 7. Close the Launcher with the ESC Key
 Press `Esc` to instantly close the launcher.  
 
 ### 8. Instant Migration to New Versions
-Even when upgrading to the latest version, you only need to set the folder path again to resume use immediately.  
+Even when upgrading to the latest version, you can start using it immediately by simply setting the folder path again.  
 
-### 9. Font size can be adjusted
-The text size on the launcher screen can be changed.  
+### 9. Adjustable Font Size
+The text size displayed in the launcher can be adjusted.  
 
 ### 10. Available in Japanese and English
 You can switch between Japanese and English in the settings screen.  
 
+### 11. Hotkey On/Off and Key Configuration
+You can enable or disable hotkey activation, change the key type, and adjust the required number of key presses from the settings screen.  
+
 ---
 
 ## Updating the Application
-
 To update, download the new version and overwrite the existing folder.  
 
 **Update steps:**
@@ -246,7 +258,7 @@ To update, download the new version and overwrite the existing folder.
 ---
 
 ## Notes
-- Registering the app in Windows Startup is recommended so it launches automatically and is always available.  
+- It is recommended to register the app in Windows Startup so it launches automatically and is always available.  
 - When using an external keyboard, make sure **NumLock** is ON to use the numeric keypad.  
 - Pressing the Shift key five times or more may trigger the Windows Sticky Keys confirmation dialog.  
   This is a standard Windows feature and **not a bug** in this application.  
@@ -260,11 +272,9 @@ Use at your own risk.
 ---
 
 ## License and Terms of Use
-
-
 This software is freeware.  
 It is released under the MIT License.  
-**It may be used free of charge for both personal and commercial purposes.**
+**It may be used free of charge for both personal and commercial purposes.**  
 However, the author assumes no responsibility for any damages that may occur as a result of using this software.  
 Please use it at your own risk.  
 
