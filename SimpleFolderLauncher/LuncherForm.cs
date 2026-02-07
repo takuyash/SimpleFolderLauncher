@@ -133,6 +133,9 @@ namespace StylishLauncherINI
             // タスクトレイ
             // ================================
             trayMenu = new ContextMenuStrip();
+            trayMenu.Renderer = new ToolStripProfessionalRenderer(new DarkColorTable());
+            trayMenu.BackColor = Color.FromArgb(35, 35, 35);
+            trayMenu.ForeColor = Color.White;
 
             menuOpen = new ToolStripMenuItem("", null, (s, e) =>
             {
@@ -720,4 +723,17 @@ namespace StylishLauncherINI
             else node.Expand();
         }
     }
+
+    // ダークテーマ用 ToolStrip
+    internal class DarkColorTable : ProfessionalColorTable
+    {
+        public override Color MenuBorder => Color.FromArgb(60, 60, 60);
+        public override Color MenuItemBorder => Color.FromArgb(60, 60, 60);
+        public override Color MenuItemSelected => Color.FromArgb(70, 130, 140);
+        public override Color ToolStripDropDownBackground => Color.FromArgb(35, 35, 35);
+        public override Color ImageMarginGradientBegin => Color.FromArgb(35, 35, 35);
+        public override Color ImageMarginGradientMiddle => Color.FromArgb(35, 35, 35);
+        public override Color ImageMarginGradientEnd => Color.FromArgb(35, 35, 35);
+    }
+
 }

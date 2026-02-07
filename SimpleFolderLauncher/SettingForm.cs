@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows.Forms;
 using System.Linq;
+using System.Drawing;
 
 namespace StylishLauncherINI
 {
@@ -32,12 +33,19 @@ namespace StylishLauncherINI
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
 
+            // ===== ダークテーマ =====
+            this.BackColor = Color.FromArgb(30, 30, 30);
+            this.ForeColor = Color.White;
+            Font uiFont = new Font("Meiryo UI", 9f);
+
             lblPath = new Label()
             {
                 Text = LanguageManager.GetString("SettingPath"),
                 Left = 10,
                 Top = 10,
-                Width = 400
+                Width = 400,
+                ForeColor = Color.Gainsboro,
+                Font = uiFont
             };
             this.Controls.Add(lblPath);
 
@@ -45,7 +53,11 @@ namespace StylishLauncherINI
             {
                 Left = 10,
                 Top = 35,
-                Width = 320
+                Width = 320,
+                BackColor = Color.FromArgb(45, 45, 45),
+                ForeColor = Color.White,
+                BorderStyle = BorderStyle.FixedSingle,
+                Font = uiFont
             };
             this.Controls.Add(txtPath);
 
@@ -54,8 +66,12 @@ namespace StylishLauncherINI
                 Text = LanguageManager.GetString("SettingBrowse"),
                 Left = 340,
                 Top = 33,
-                Width = 80
+                Width = 80,
+                FlatStyle = FlatStyle.Flat,
+                BackColor = Color.FromArgb(60, 60, 60),
+                ForeColor = Color.White
             };
+            btnBrowse.FlatAppearance.BorderColor = Color.FromArgb(80, 80, 80);
             btnBrowse.Click += BtnBrowse_Click;
             this.Controls.Add(btnBrowse);
 
@@ -64,7 +80,9 @@ namespace StylishLauncherINI
                 Text = LanguageManager.GetString("SettingFontSize"),
                 Left = 10,
                 Top = 75,
-                Width = 80
+                Width = 80,
+                ForeColor = Color.Gainsboro,
+                Font = uiFont
             };
             this.Controls.Add(lblFont);
 
@@ -75,7 +93,11 @@ namespace StylishLauncherINI
                 Width = 60,
                 Minimum = 8,
                 Maximum = 20,
-                Value = 10
+                Value = 10,
+                BackColor = Color.FromArgb(45, 45, 45),
+                ForeColor = Color.White,
+                BorderStyle = BorderStyle.FixedSingle,
+                Font = uiFont
             };
             this.Controls.Add(numFontSize);
 
@@ -84,7 +106,9 @@ namespace StylishLauncherINI
                 Text = LanguageManager.GetString("SettingLang"),
                 Left = 10,
                 Top = 115,
-                Width = 100
+                Width = 100,
+                ForeColor = Color.Gainsboro,
+                Font = uiFont
             };
             this.Controls.Add(lblLang);
 
@@ -93,7 +117,10 @@ namespace StylishLauncherINI
                 Left = 110,
                 Top = 113,
                 Width = 100,
-                DropDownStyle = ComboBoxStyle.DropDownList
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                BackColor = Color.FromArgb(45, 45, 45),
+                ForeColor = Color.White,
+                Font = uiFont
             };
             cmbLang.Items.Add("日本語");
             cmbLang.Items.Add("en");
@@ -109,7 +136,9 @@ namespace StylishLauncherINI
                 Left = 10,
                 Top = 150,
                 Width = 300,
-                Text = LanguageManager.GetString("SettingEnableHotkey")
+                Text = LanguageManager.GetString("SettingEnableHotkey"),
+                ForeColor = Color.Gainsboro,
+                Font = uiFont
             };
             this.Controls.Add(chkEnableHotKey);
 
@@ -118,8 +147,12 @@ namespace StylishLauncherINI
                 Text = LanguageManager.GetString("SettingSave"),
                 Left = 330,
                 Top = 190,
-                Width = 90
+                Width = 90,
+                FlatStyle = FlatStyle.Flat,
+                BackColor = Color.FromArgb(70, 130, 140),
+                ForeColor = Color.White
             };
+            btnSave.FlatAppearance.BorderColor = Color.FromArgb(90, 150, 160);
             btnSave.Click += BtnSave_Click;
             this.Controls.Add(btnSave);
 

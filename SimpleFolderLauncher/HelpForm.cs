@@ -27,13 +27,17 @@ namespace StylishLauncherINI
             this.MaximizeBox = false;
             this.MinimizeBox = false;
 
+            // ===== ダークテーマ =====
+            this.BackColor = Color.FromArgb(30, 30, 30);
+            this.ForeColor = Color.White;
 
             panel = new FlowLayoutPanel()
             {
                 Dock = DockStyle.Fill,
                 FlowDirection = FlowDirection.TopDown,
                 Padding = new Padding(15),
-                AutoScroll = true
+                AutoScroll = true,
+                BackColor = Color.FromArgb(30, 30, 30)
             };
             this.Controls.Add(panel);
 
@@ -41,7 +45,8 @@ namespace StylishLauncherINI
             panel.Controls.Add(new Label()
             {
                 Text = "SimpleFolderLauncher",
-                Font = new Font(Font.FontFamily, 12, FontStyle.Bold),
+                Font = new Font("Meiryo UI", 12, FontStyle.Bold),
+                ForeColor = Color.White,
                 AutoSize = true
             });
 
@@ -50,6 +55,7 @@ namespace StylishLauncherINI
             {
                 Text = $"Version: {GetVersion()}",
                 AutoSize = true,
+                ForeColor = Color.Gainsboro,
                 Margin = new Padding(0, 5, 0, 15)
             });
 
@@ -60,7 +66,7 @@ namespace StylishLauncherINI
             _updateLabel = new Label()
             {
                 AutoSize = true,
-                ForeColor = Color.DarkRed,
+                ForeColor = Color.OrangeRed,
                 Margin = new Padding(0, 15, 0, 0),
                 Visible = false
             };
@@ -96,7 +102,10 @@ namespace StylishLauncherINI
             {
                 Text = text,
                 AutoSize = true,
-                Margin = new Padding(0, 5, 0, 5)
+                Margin = new Padding(0, 5, 0, 5),
+                LinkColor = Color.LightSkyBlue,
+                ActiveLinkColor = Color.Cyan,
+                VisitedLinkColor = Color.SlateGray
             };
 
             link.LinkClicked += (s, e) =>
