@@ -234,7 +234,8 @@ namespace StylishLauncherINI
             lblFont.Text = LanguageManager.GetString("SettingFontSize");
             lblLang.Text = LanguageManager.GetString("SettingLang");
             btnSave.Text = LanguageManager.GetString("SettingSave");
-            chkEnableHotKey.Text = LanguageManager.GetString("chkEnableHotKey");
+            chkEnableHotKey.Text = LanguageManager.GetString("SettingEnableHotkey");
+            lblShiftCount.Text = LanguageManager.GetString("SettingShiftCount");
         }
 
         private void BtnBrowse_Click(object sender, EventArgs e)
