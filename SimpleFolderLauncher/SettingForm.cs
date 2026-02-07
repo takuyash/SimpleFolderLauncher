@@ -23,6 +23,10 @@ namespace StylishLauncherINI
 
         private string iniPath;
 
+        private ComboBox cmbShiftCount;
+        private Label lblShiftCount;
+
+
         public SettingsForm(string iniFilePath)
         {
             iniPath = iniFilePath;
@@ -156,6 +160,34 @@ namespace StylishLauncherINI
             btnSave.Click += BtnSave_Click;
             this.Controls.Add(btnSave);
 
+            lblShiftCount = new Label()
+            {
+                Text = LanguageManager.GetString("SettingShiftCount"),
+                Left = 10,
+                Top = 180,
+                Width = 200,
+                ForeColor = Color.Gainsboro,
+                Font = uiFont
+            };
+            this.Controls.Add(lblShiftCount);
+
+            cmbShiftCount = new ComboBox()
+            {
+                Left = 220,
+                Top = 176,
+                Width = 60,
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                BackColor = Color.FromArgb(45, 45, 45),
+                ForeColor = Color.White,
+                Font = uiFont
+            };
+
+            cmbShiftCount.Items.AddRange(new object[] { "2", "3", "4", "5" });
+            cmbShiftCount.SelectedIndex = 0; // デフォルト 2回
+
+            this.Controls.Add(cmbShiftCount);
+
+
             // 既存設定読み込み
             if (File.Exists(iniPath))
             {
@@ -176,6 +208,12 @@ namespace StylishLauncherINI
                     bool.TryParse(ini["EnableHotKey"], out bool enabled))
                 {
                     chkEnableHotKey.Checked = enabled;
+                }
+                if (ini.ContainsKey("ShiftPressCount") &&
+                     decimal.TryParse(ini["ShiftPressCount"], out decimal sc))
+                {
+                    int v = (int)Math.Max(2, Math.Min(5, sc));
+                    cmbShiftCount.SelectedItem = v.ToString();
                 }
                 else
                 {
@@ -282,7 +320,10 @@ namespace StylishLauncherINI
                     $"LauncherFolder={folder}\n" +
                     $"FontSize={numFontSize.Value}\n" +
                     $"Language={cmbLang.Text}\n" +
-                    $"EnableHotKey={chkEnableHotKey.Checked}");
+                    $"EnableHotKey={chkEnableHotKey.Checked}\n" +
+                    $"ShiftPressCount={cmbShiftCount.SelectedItem}\n"
+                );
+
 
                 MessageBox.Show(LanguageManager.GetString("MsgSaveSuccess"));
                 this.Close();

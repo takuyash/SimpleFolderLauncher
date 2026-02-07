@@ -11,9 +11,9 @@ namespace StylishLauncherINI
         // --- Win32 API Definitions ---
         private const int WH_KEYBOARD_LL = 13;
         private const int WM_KEYDOWN = 0x0100;
-        private const int WM_KEYUP = 0x0101; // 追加
+        private const int WM_KEYUP = 0x0101;
         private const int WM_SYSKEYDOWN = 0x0104;
-        private const int WM_SYSKEYUP = 0x0105; // 追加
+        private const int WM_SYSKEYUP = 0x0105;
         private const int VK_LSHIFT = 0xA0;
         private const int VK_RSHIFT = 0xA1;
 
@@ -50,6 +50,9 @@ namespace StylishLauncherINI
         private const int DOUBLE_PRESS_MS = 300;
         private static LauncherForm _launcher;
 
+        // 連打判定用
+        private static int _shiftPressCount = 0;
+
         // 長押し判定用のフラグ
         private static bool _isShiftPressed = false;
 
@@ -69,6 +72,21 @@ namespace StylishLauncherINI
             return bool.TryParse(ini["EnableHotKey"], out bool enabled)
                 ? enabled
                 : true;
+        }
+
+        /// <summary>
+        /// Shift連打回数取得（即時反映）
+        /// </summary>
+        private static int GetShiftPressCount()
+        {
+            if (!File.Exists(IniPath)) return 2;
+
+            var ini = IniHelper.ReadIni(IniPath);
+            if (!ini.ContainsKey("ShiftPressCount")) return 2;
+
+            return int.TryParse(ini["ShiftPressCount"], out int count)
+                ? Math.Max(2, Math.Min(5, count))
+                : 2;
         }
 
         [STAThread]
@@ -99,16 +117,6 @@ namespace StylishLauncherINI
 
             UnhookWindowsHookEx(_hookID);
             UnregisterHotKey(messageWindow.Handle, HOTKEY_ID_CTRL_SHIFT_I);
-        }
-
-        private static void ToggleLauncher(object sender, EventArgs e)
-        {
-            if (_launcher.Visible) _launcher.Hide();
-            else
-            {
-                _launcher.Show();
-                _launcher.Activate();
-            }
         }
 
         private static void ShowLauncher()
@@ -168,19 +176,28 @@ namespace StylishLauncherINI
                         var now = DateTime.Now;
                         if ((now - _lastShiftTime).TotalMilliseconds <= DOUBLE_PRESS_MS)
                         {
+                            _shiftPressCount++;
+                        }
+                        else
+                        {
+                            _shiftPressCount = 1;
+                        }
+
+                        _lastShiftTime = now;
+
+                        if (_shiftPressCount >= GetShiftPressCount())
+                        {
                             if (_launcher != null && _launcher.IsHandleCreated && !_launcher.IsDisposed)
                             {
                                 _launcher.BeginInvoke(new Action(ShowLauncher));
                             }
+                            _shiftPressCount = 0;
                             _lastShiftTime = DateTime.MinValue;
-                        }
-                        else
-                        {
-                            _lastShiftTime = now;
                         }
                     }
                     else
                     {
+                        _shiftPressCount = 0;
                         _lastShiftTime = DateTime.MinValue;
                     }
                 }
