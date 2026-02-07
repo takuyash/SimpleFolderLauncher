@@ -22,6 +22,10 @@ namespace StylishLauncherINI
         private const int WM_HOTKEY = 0x0312;
         private const int HOTKEY_ID_CTRL_SHIFT_I = 9001;
 
+        private static DateTime _lastKeyTime = DateTime.MinValue;
+        private static int _pressCount = 0;
+        private static bool _isKeyPressed = false;
+
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
 
@@ -154,53 +158,47 @@ namespace StylishLauncherINI
                 // --- 1. キーが離された時の処理 ---
                 if (wParam == (IntPtr)WM_KEYUP || wParam == (IntPtr)WM_SYSKEYUP)
                 {
-                    if (vkCode == VK_LSHIFT || vkCode == VK_RSHIFT)
+                    if (IsTargetKey(vkCode))
                     {
-                        _isShiftPressed = false; // 押し下げ状態を解除
+                        _isKeyPressed = false; // 押し下げ状態を解除
                     }
                 }
 
-                // --- 2. キーが押された時の処理 ---
+                // --- 2. キーが押された時の処理
                 if (wParam == (IntPtr)WM_KEYDOWN || wParam == (IntPtr)WM_SYSKEYDOWN)
                 {
-                    if (vkCode == VK_LSHIFT || vkCode == VK_RSHIFT)
+                    if (IsTargetKey(vkCode))
                     {
-                        // 既に押されている（長押し中）なら無視
-                        if (_isShiftPressed)
+                    	// 既に押されている（長押し中）なら無視
+                        if (_isKeyPressed)
                         {
                             return CallNextHookEx(_hookID, nCode, wParam, lParam);
                         }
 
-                        _isShiftPressed = true; // 押し下げ状態を記録
+                        _isKeyPressed = true; // 押し下げ状態を記録
 
                         var now = DateTime.Now;
-                        if ((now - _lastShiftTime).TotalMilliseconds <= DOUBLE_PRESS_MS)
-                        {
-                            _shiftPressCount++;
-                        }
-                        else
-                        {
-                            _shiftPressCount = 1;
-                        }
+                        _pressCount = (now - _lastKeyTime).TotalMilliseconds <= DOUBLE_PRESS_MS
+                            ? _pressCount + 1
+                            : 1;
 
-                        _lastShiftTime = now;
+                        _lastKeyTime = now;
 
-                        if (_shiftPressCount >= GetShiftPressCount())
+                        if (_pressCount >= GetShiftPressCount())
                         {
-                            if (_launcher != null && _launcher.IsHandleCreated && !_launcher.IsDisposed)
-                            {
-                                _launcher.BeginInvoke(new Action(ShowLauncher));
-                            }
-                            _shiftPressCount = 0;
-                            _lastShiftTime = DateTime.MinValue;
+                            _launcher.BeginInvoke(new Action(ShowLauncher));
+                            _pressCount = 0;
+                            _lastKeyTime = DateTime.MinValue;
                         }
                     }
                     else
                     {
-                        _shiftPressCount = 0;
-                        _lastShiftTime = DateTime.MinValue;
+                        _pressCount = 0;
+                        _lastKeyTime = DateTime.MinValue;
                     }
+
                 }
+
             }
             return CallNextHookEx(_hookID, nCode, wParam, lParam);
         }
@@ -223,5 +221,24 @@ namespace StylishLauncherINI
                 base.WndProc(ref m);
             }
         }
+
+        private static string GetTriggerKey()
+        {
+            if (!File.Exists(IniPath)) return "Shift";
+            var ini = IniHelper.ReadIni(IniPath);
+            return ini.ContainsKey("TriggerKey") ? ini["TriggerKey"] : "Shift";
+        }
+
+        private static bool IsTargetKey(int vk)
+        {
+            return GetTriggerKey() switch
+            {
+                "Ctrl" => vk == 0xA2 || vk == 0xA3,
+                "Alt" => vk == 0xA4 || vk == 0xA5,
+                "Space" => vk == 0x20,
+                _ => vk == VK_LSHIFT || vk == VK_RSHIFT
+            };
+        }
+
     }
 }

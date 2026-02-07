@@ -72,7 +72,8 @@ namespace StylishLauncherINI
             { "MsgSaveFailed", "保存に失敗しました: " },
             { "DialogSelectDir", "フォルダを選択してください" },
             { "SettingEnableHotkey", "ホットキーを有効にする" },
-            { "SettingShiftCount", "Shift連打回数 (2～5):" }
+            { "SettingLaunchKeyCount", "連打回数 (2～5)回:" },
+            { "SettingTriggerKey", "起動キー" }
         };
 
         private static readonly Dictionary<string, string> English = new()
@@ -105,8 +106,8 @@ namespace StylishLauncherINI
             { "MsgSaveFailed", "Failed to save: " },
             { "DialogSelectDir", "Select a folder" },
             { "SettingEnableHotkey", "Enable hotkey" },
-            { "SettingShiftCount", "Shift press count (2–5):" }
-
+            { "SettingLaunchKeyCount", "press count (2–5):" },
+            { "SettingTriggerKey", "Trigger Key:" }
 
         };
     }

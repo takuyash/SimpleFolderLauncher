@@ -23,16 +23,18 @@ namespace StylishLauncherINI
 
         private string iniPath;
 
-        private ComboBox cmbShiftCount;
-        private Label lblShiftCount;
+        private ComboBox cmbLaunchKeyCount;
+        private Label lblLaunchKeyCount;
 
+        private ComboBox cmbTriggerKey;
+        private Label lblTriggerKey;
 
         public SettingsForm(string iniFilePath)
         {
             iniPath = iniFilePath;
 
             this.Text = LanguageManager.GetString("SettingTitle");
-            this.Size = new System.Drawing.Size(450, 280);
+            this.Size = new System.Drawing.Size(450, 320);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -146,11 +148,61 @@ namespace StylishLauncherINI
             };
             this.Controls.Add(chkEnableHotKey);
 
+            lblTriggerKey = new Label()
+            {
+                Text = LanguageManager.GetString("SettingTriggerKey"),
+                Left = 10,
+                Top = 180,
+                Width = 100,
+                ForeColor = Color.Gainsboro,
+                Font = uiFont
+            };
+            this.Controls.Add(lblTriggerKey);
+
+            cmbTriggerKey = new ComboBox()
+            {
+                Left = 110,
+                Top = 176,
+                Width = 100,
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                BackColor = Color.FromArgb(45, 45, 45),
+                ForeColor = Color.White,
+                Font = uiFont
+            };
+            cmbTriggerKey.Items.AddRange(new object[] { "Shift", "Ctrl", "Alt", "Space" });
+            cmbTriggerKey.SelectedIndex = 0;
+            this.Controls.Add(cmbTriggerKey);
+
+            lblLaunchKeyCount = new Label()
+            {
+                Text = LanguageManager.GetString("SettingLaunchKeyCount"),
+                Left = 10,
+                Top = 210,
+                Width = 200,
+                ForeColor = Color.Gainsboro,
+                Font = uiFont
+            };
+            this.Controls.Add(lblLaunchKeyCount);
+
+            cmbLaunchKeyCount = new ComboBox()
+            {
+                Left = 220,
+                Top = 206,
+                Width = 60,
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                BackColor = Color.FromArgb(45, 45, 45),
+                ForeColor = Color.White,
+                Font = uiFont
+            };
+            cmbLaunchKeyCount.Items.AddRange(new object[] { "2", "3", "4", "5" });
+            cmbLaunchKeyCount.SelectedIndex = 0;
+            this.Controls.Add(cmbLaunchKeyCount);
+
             btnSave = new Button()
             {
                 Text = LanguageManager.GetString("SettingSave"),
                 Left = 330,
-                Top = 190,
+                Top = 245,
                 Width = 90,
                 FlatStyle = FlatStyle.Flat,
                 BackColor = Color.FromArgb(70, 130, 140),
@@ -160,65 +212,19 @@ namespace StylishLauncherINI
             btnSave.Click += BtnSave_Click;
             this.Controls.Add(btnSave);
 
-            lblShiftCount = new Label()
-            {
-                Text = LanguageManager.GetString("SettingShiftCount"),
-                Left = 10,
-                Top = 180,
-                Width = 200,
-                ForeColor = Color.Gainsboro,
-                Font = uiFont
-            };
-            this.Controls.Add(lblShiftCount);
-
-            cmbShiftCount = new ComboBox()
-            {
-                Left = 220,
-                Top = 176,
-                Width = 60,
-                DropDownStyle = ComboBoxStyle.DropDownList,
-                BackColor = Color.FromArgb(45, 45, 45),
-                ForeColor = Color.White,
-                Font = uiFont
-            };
-
-            cmbShiftCount.Items.AddRange(new object[] { "2", "3", "4", "5" });
-            cmbShiftCount.SelectedIndex = 0; // デフォルト 2回
-
-            this.Controls.Add(cmbShiftCount);
-
-
-            // 既存設定読み込み
             if (File.Exists(iniPath))
             {
                 var ini = IniHelper.ReadIni(iniPath);
 
-                if (ini.ContainsKey("LauncherFolder"))
-                {
-                    txtPath.Text = ini["LauncherFolder"];
-                }
-                if (ini.ContainsKey("FontSize") &&
-                    decimal.TryParse(ini["FontSize"], out decimal fs))
-                {
-                    numFontSize.Value = Math.Max(
-                        numFontSize.Minimum,
-                        Math.Min(numFontSize.Maximum, fs));
-                }
-                if (ini.ContainsKey("EnableHotKey") &&
-                    bool.TryParse(ini["EnableHotKey"], out bool enabled))
-                {
+                if (ini.ContainsKey("LauncherFolder")) txtPath.Text = ini["LauncherFolder"];
+                if (ini.ContainsKey("FontSize") && decimal.TryParse(ini["FontSize"], out decimal fs))
+                    numFontSize.Value = Math.Max(numFontSize.Minimum, Math.Min(numFontSize.Maximum, fs));
+                if (ini.ContainsKey("EnableHotKey") && bool.TryParse(ini["EnableHotKey"], out bool enabled))
                     chkEnableHotKey.Checked = enabled;
-                }
-                if (ini.ContainsKey("ShiftPressCount") &&
-                     decimal.TryParse(ini["ShiftPressCount"], out decimal sc))
-                {
-                    int v = (int)Math.Max(2, Math.Min(5, sc));
-                    cmbShiftCount.SelectedItem = v.ToString();
-                }
-                else
-                {
-                    chkEnableHotKey.Checked = true;
-                }
+                if (ini.ContainsKey("ShiftPressCount"))
+                    cmbLaunchKeyCount.SelectedItem = ini["ShiftPressCount"];
+                if (ini.ContainsKey("TriggerKey"))
+                    cmbTriggerKey.SelectedItem = ini["TriggerKey"];
             }
             else
             {
@@ -235,7 +241,8 @@ namespace StylishLauncherINI
             lblLang.Text = LanguageManager.GetString("SettingLang");
             btnSave.Text = LanguageManager.GetString("SettingSave");
             chkEnableHotKey.Text = LanguageManager.GetString("SettingEnableHotkey");
-            lblShiftCount.Text = LanguageManager.GetString("SettingShiftCount");
+            lblLaunchKeyCount.Text = LanguageManager.GetString("SettingLaunchKeyCount");
+            lblTriggerKey.Text = LanguageManager.GetString("SettingTriggerKey");
         }
 
         private void BtnBrowse_Click(object sender, EventArgs e)
@@ -243,17 +250,8 @@ namespace StylishLauncherINI
             using (var dialog = new FolderBrowserDialog())
             {
                 dialog.Description = LanguageManager.GetString("DialogSelectDir");
-
-                // 既に入力されている場合は初期フォルダに設定
-                if (Directory.Exists(txtPath.Text))
-                {
-                    dialog.SelectedPath = txtPath.Text;
-                }
-
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    txtPath.Text = dialog.SelectedPath;
-                }
+                if (Directory.Exists(txtPath.Text)) dialog.SelectedPath = txtPath.Text;
+                if (dialog.ShowDialog() == DialogResult.OK) txtPath.Text = dialog.SelectedPath;
             }
         }
 
@@ -316,14 +314,15 @@ namespace StylishLauncherINI
             // ⑥ 保存
             try
             {
-                File.WriteAllText(
-                    iniPath,
-                    $"LauncherFolder={folder}\n" +
-                    $"FontSize={numFontSize.Value}\n" +
-                    $"Language={cmbLang.Text}\n" +
-                    $"EnableHotKey={chkEnableHotKey.Checked}\n" +
-                    $"ShiftPressCount={cmbShiftCount.SelectedItem}\n"
-                );
+            File.WriteAllText(
+                iniPath,
+                $"LauncherFolder={txtPath.Text.Trim()}\n" +
+                $"FontSize={numFontSize.Value}\n" +
+                $"Language={cmbLang.Text}\n" +
+                $"EnableHotKey={chkEnableHotKey.Checked}\n" +
+                $"TriggerKey={cmbTriggerKey.SelectedItem}\n" +
+                $"ShiftPressCount={cmbLaunchKeyCount.SelectedItem}\n"
+            );
 
 
                 MessageBox.Show(LanguageManager.GetString("MsgSaveSuccess"));
