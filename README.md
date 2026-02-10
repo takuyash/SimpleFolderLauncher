@@ -15,7 +15,7 @@ Windows 11 で「フォルダをタスクバーにピン留めできなくなっ
    <img src="screenshots/overview.gif" width="40%">  
 
 ## 動作環境
-Windows 11
+Windows 11 / Windows 10
 
 ## 使い方（クイックスタート）
 0. 下記から最新バージョンをダウンロードし、任意の場所に解凍します 
@@ -155,7 +155,7 @@ This software is **freeware** and can be used at no cost.
 ---
 
 ## System Requirements
-- Windows 11
+- Windows 11 / Windows 10
 
 ---
 
