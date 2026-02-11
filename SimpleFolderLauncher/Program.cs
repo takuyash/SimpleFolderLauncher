@@ -54,6 +54,9 @@ namespace StylishLauncherINI
         private const int DOUBLE_PRESS_MS = 300;
         private static LauncherForm _launcher;
 
+        // どこからでも参照できるアイコンオブジェクト
+        public static Icon AppIcon;
+
         // 連打判定用
         private static int _shiftPressCount = 0;
 
@@ -98,6 +101,9 @@ namespace StylishLauncherINI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            // アイコンを一度だけ読み込む
+            AppIcon = LoadIcon("icon.ico");
 
             string iniPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
             var ini = IniHelper.ReadIni(iniPath);
@@ -238,6 +244,16 @@ namespace StylishLauncherINI
                 "Space" => vk == 0x20,
                 _ => vk == VK_LSHIFT || vk == VK_RSHIFT
             };
+        }
+
+        private static Icon LoadIcon(string fileName)
+        {
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+            if (File.Exists(path))
+            {
+                try { return new Icon(path); } catch { }
+            }
+            return Icon.ExtractAssociatedIcon(Application.ExecutablePath);
         }
 
     }

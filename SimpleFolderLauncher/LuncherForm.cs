@@ -55,9 +55,6 @@ namespace StylishLauncherINI
         public static extern bool DestroyIcon(IntPtr hIcon);
     }
 
-    /// <summary>
-    /// ランチャー画面
-    /// </summary>
     public class LauncherForm : Form
     {
         private TreeView fileTree;
@@ -102,7 +99,15 @@ namespace StylishLauncherINI
 
             this.KeyPreview = true;
 
-            try { this.Icon = new Icon(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "icon.ico")); } catch { }
+            // AppIconを使用
+            if (Program.AppIcon != null)
+                this.Icon = Program.AppIcon;
+
+            iconList = new ImageList
+            {
+                ColorDepth = ColorDepth.Depth32Bit,
+                ImageSize = new Size(16, 16)
+            };
 
             // ImageListの初期化
             iconList = new ImageList();
