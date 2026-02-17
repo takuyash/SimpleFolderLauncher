@@ -472,6 +472,18 @@ namespace StylishLauncherINI
         }
 
         /// <summary>
+        /// フォーカスが他アプリへ移動したら LauncherForm を閉じる（Hide）
+        /// </summary>
+        protected override void OnDeactivate(EventArgs e)
+        {
+            base.OnDeactivate(e);
+            if (this.Visible)
+            {
+                this.Hide();
+            }
+        }
+
+        /// <summary>
         /// フォルダを再帰的に読み込む
         /// </summary>
         /// <param name="path"></param>
