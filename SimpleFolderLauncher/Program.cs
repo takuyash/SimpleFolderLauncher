@@ -67,6 +67,19 @@ namespace StylishLauncherINI
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini");
 
         /// <summary>
+        /// Launcher以外のフォームが開いているか確認
+        /// </summary>
+        private static bool IsOtherFormOpen()
+        {
+            foreach (Form f in Application.OpenForms)
+            {
+                if (f is LauncherForm) continue;
+                if (f.Visible) return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// ホットキー有効判定（即時反映）
         /// </summary>
         private static bool IsHotKeyEnabled()
@@ -131,6 +144,9 @@ namespace StylishLauncherINI
 
         private static void ShowLauncher()
         {
+            // 他フォーム開いてたら表示しない
+            if (IsOtherFormOpen()) return;
+
             if (_launcher == null) return;
             if (_launcher.IsDisposed) return;
             if (_launcher.Visible) return;
