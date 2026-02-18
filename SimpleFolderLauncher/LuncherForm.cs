@@ -144,6 +144,10 @@ namespace StylishLauncherINI
 
             menuOpen = new ToolStripMenuItem("", null, (s, e) =>
             {
+                // 他画面開いてたら起動しない
+                if (IsOtherFormOpen())
+                    return;
+
                 this.Show();
                 this.Activate();
                 fileTree.Focus();
@@ -253,6 +257,20 @@ namespace StylishLauncherINI
                     mouseScreen.Bounds.Top + (mouseScreen.Bounds.Height - this.Height) / 2
                 );
             };
+        }
+
+        /// <summary>
+        /// 他の画面が開かれているときはランチャー画面は表示しない
+        /// </summary>
+        /// <returns></returns>
+        private bool IsOtherFormOpen()
+        {
+            foreach (Form f in Application.OpenForms)
+            {
+                if (f == this) continue;     // Launcher自身は除外
+                if (f.Visible) return true;  // 他フォーム表示中
+            }
+            return false;
         }
 
         /// <summary>
