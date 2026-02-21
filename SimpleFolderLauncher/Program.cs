@@ -9,39 +9,45 @@ namespace StylishLauncherINI
     static class Program
     {
         // --- Win32 API Definitions ---
-        private const int WH_KEYBOARD_LL = 13;
-        private const int WM_KEYDOWN = 0x0100;
-        private const int WM_KEYUP = 0x0101;
-        private const int WM_SYSKEYDOWN = 0x0104;
-        private const int WM_SYSKEYUP = 0x0105;
-        private const int VK_LSHIFT = 0xA0;
-        private const int VK_RSHIFT = 0xA1;
+        private const int WH_KEYBOARD_LL = 13; // OS全体のキー入力を受け取るモード
+        private const int WM_KEYDOWN = 0x0100; //キー押す
+        private const int WM_KEYUP = 0x0101; //キー離す
+        private const int WM_SYSKEYDOWN = 0x0104; // Alt絡みのキー押す
+        private const int WM_SYSKEYUP = 0x0105; // Alt絡みのキー離す
+        private const int VK_LSHIFT = 0xA0; // 左Shift
+        private const int VK_RSHIFT = 0xA1; // 右Shift
 
-        private const int MOD_CONTROL = 0x0002;
-        private const int MOD_SHIFT = 0x0004;
-        private const int WM_HOTKEY = 0x0312;
-        private const int HOTKEY_ID_CTRL_SHIFT_I = 9001;
+        private const int MOD_CONTROL = 0x0002; // Ctrl
+        private const int MOD_SHIFT = 0x0004; // Shift
+        private const int WM_HOTKEY = 0x0312; // ホットキー押された時に届くWindowsメッセージ
+        private const int HOTKEY_ID_CTRL_SHIFT_I = 9001; // ホットキー識別ID
 
         private static DateTime _lastKeyTime = DateTime.MinValue;
         private static int _pressCount = 0;
         private static bool _isKeyPressed = false;
 
+        // キーボードフック
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
 
+        // キーボードフックを解除する
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool UnhookWindowsHookEx(IntPtr hhk);
 
+        // 次のフック処理へイベントを渡す
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
 
+        // フック登録時の自分のID取得
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern IntPtr GetModuleHandle(string lpModuleName);
 
+        // ホットキー登録
         [DllImport("user32.dll")]
         private static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
 
+        // ホットキー登録解除
         [DllImport("user32.dll")]
         private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
