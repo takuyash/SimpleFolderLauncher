@@ -174,7 +174,7 @@ This software is **freeware** and can be used at no cost.
 ---
 
 ## Concept
-   <img src="screenshots/concept.png" width="40%">  
+   <img src="screenshots/concept_en.png" width="40%">  
 
 ---
 
