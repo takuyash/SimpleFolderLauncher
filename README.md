@@ -14,12 +14,12 @@ Windows 11 で「フォルダをタスクバーにピン留めできなくなっ
 ---
 
 ## 画面動作
-   <img src="screenshots/overview.gif" width="40%">  
+   <img src="screenshots/overview.gif" width="90%">  
    
 ---
 
 ## コンセプト
-   <img src="screenshots/concept.png" width="40%">  
+   <img src="screenshots/concept.png" width="90%">  
 
 ---
 
@@ -40,20 +40,20 @@ Windows 11 / Windows 10
 0. 下記から最新バージョンをダウンロードし、任意の場所に解凍します 
    https://github.com/takuyash/SimpleFolderLauncher/releases  
 
-   <img src="screenshots/decompress.png" width="40%">  
+   <img src="screenshots/decompress.png" width="90%">  
 
 1. exe を実行するとタスクトレイに常駐します  
    <img src="screenshots/taskTray.png" height="10%">  
 
 2. タスクトレイのアイコンを右クリックして、設定画面が開けます  
    言語は日本語と英語が選べるため好きなほうを選んでください。  
-   <img src="screenshots/tasktray2.png" width="40%">  
+   <img src="screenshots/tasktray2.png" width="80%">  
    ランチャーに表示したいフォルダのパスを設定します。  
    1つのフォルダによく使うアプリやフォルダ、ファイルのショートカットを集めて置き、そのフォルダのパスを設定してください。  
-   <img src="screenshots/setting.png" width="30%" >  
+   <img src="screenshots/setting.png" width="80%" >  
    
 3. Shift 2回連続 もしくは Ctrl + Shift + i のショートカットでランチャーを呼び出すことができます  
-   <img src="screenshots/launcher.png" width="40%">  
+   <img src="screenshots/launcher.png" width="90%">  
 
 4. 表示された項目のキー（0-9 / A-Z）を押すだけでフォルダを開けます
 
@@ -169,12 +169,12 @@ This software is **freeware** and can be used at no cost.
 ---
 
 ## Demo
-<img src="screenshots/overview.gif" width="40%">
+<img src="screenshots/overview.gif" width="90%">
 
 ---
 
 ## Concept
-   <img src="screenshots/concept_en.png" width="40%">  
+   <img src="screenshots/concept_en.png" width="90%">  
 
 ---
 
@@ -196,22 +196,22 @@ No personal information is collected.
 0. Download the latest version from the link below and extract it to any location:  
    https://github.com/takuyash/SimpleFolderLauncher/releases  
 
-   <img src="screenshots/decompress.png" width="40%">
+   <img src="screenshots/decompress.png" width="90%">
 
 1. Run the `.exe` file and the application will stay resident in the system tray.  
    <img src="screenshots/taskTray.png" height="10%">
 
 2. Right-click the system tray icon to open the settings window.  
    You can select either Japanese or English as the display language.  
-   <img src="screenshots/tasktray2_en.png" width="40%">  
+   <img src="screenshots/tasktray2_en.png" width="90%">  
 
    Set the path of the folder you want to display in the launcher.  
    Collect shortcuts to frequently used applications, folders, or files into a single folder, and specify that folder’s path.  
 
-   <img src="screenshots/setting_en.png" width="30%">
+   <img src="screenshots/setting_en.png" width="80%">
 
 3. Open the launcher using **double Shift** or **Ctrl + Shift + I**.  
-   <img src="screenshots/launcher.png" width="40%">
+   <img src="screenshots/launcher.png" width="90%">
 
 4. Press the assigned key (0–9 / A–Z) to instantly open the corresponding folder.
 
