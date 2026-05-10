@@ -13,8 +13,11 @@ namespace StylishLauncherINI
     {
 
         private const string GitHubRepoUrl = "https://github.com/takuyash/WinSimpleFolderLauncher";
-        private const string HelpUrl = "https://takuyash.github.io/WinSimpleFolderLauncherSite/docs.html";
+
+        private const string HelpUrl = "";
+
         private const string LicenseUrl = "https://github.com/takuyash/WinSimpleFolderLauncher/blob/main/LICENSE";
+
         private Label _updateLabel;
         private FlowLayoutPanel panel;
 
