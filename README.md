@@ -1,4 +1,4 @@
-# SimpleFolderLauncher (シンプルフォルダランチャー)
+# WinSimpleFolderLauncher (シンプルフォルダランチャー)
 
 Windowsフォルダをそのまま使える、超軽量・超高速フォルダランチャー
 
@@ -38,7 +38,7 @@ Windows 11 / Windows 10
 
 ## 使い方（クイックスタート）
 0. 下記から最新バージョンをダウンロードし、任意の場所に解凍します 
-   https://github.com/takuyash/SimpleFolderLauncher/releases  
+   https://github.com/takuyash/WinSimpleFolderLauncher/releases  
 
    <img src="screenshots/decompress.png" width="90%">  
 
@@ -63,7 +63,7 @@ Windows 11 / Windows 10
 ・ランチャー画面は、デフォルトではShift 2回連続 (設定で変更できます)もしくは Ctrl + Shift + i で表示できます。  
 
 詳細な手順は下記に記載  
-https://takuyash.github.io/SimplefolderlauncherSite/docs.html
+https://takuyash.github.io/WinSimpleFolderLauncherSite/docs.html
 
 
 ## 特徴
@@ -116,7 +116,7 @@ https://takuyash.github.io/SimplefolderlauncherSite/docs.html
 ## アプリ更新方法
 更新時は新しいバージョンをダウンロードして既存フォルダに上書きしてください。  
 アップデート方法  
-1. SimpleFolderLauncherを終了する  
+1. WinSimpleFolderLauncherを終了する  
 2. 新しいzipファイルをダウンロード  
 3. 既存フォルダに上書きする  
 4. 起動する  
@@ -153,11 +153,11 @@ GitHub の ⭐ Star や 👀 Watch を付けてもらえるととても励みに
 
 
 
-# SimpleFolderLauncher
+# WinSimpleFolderLauncher
 
 An ultra-lightweight and ultra-fast folder launcher that uses Windows folders as-is.
 
-SimpleFolderLauncher allows you to use any Windows folder **directly as a launcher**.  
+WinSimpleFolderLauncher allows you to use any Windows folder **directly as a launcher**.  
 It is an ultra-lightweight, ultra-fast, and minimal-setup folder launcher.
 
 This tool was created to solve the issue in **Windows 11 where folders can no longer be pinned to the taskbar**.  
@@ -194,7 +194,7 @@ No personal information is collected.
 ## How to Use (Quick Start)
 
 0. Download the latest version from the link below and extract it to any location:  
-   https://github.com/takuyash/SimpleFolderLauncher/releases  
+   https://github.com/takuyash/WinSimpleFolderLauncher/releases  
 
    <img src="screenshots/decompress.png" width="90%">
 
@@ -223,7 +223,7 @@ No personal information is collected.
 - By default, the launcher can be opened with **double Shift** (configurable) or **Ctrl + Shift + I**.
 
 Detailed instructions are available here:  
-https://takuyash.github.io/SimplefolderlauncherSite/en/docs.html
+https://takuyash.github.io/WinSimpleFolderLauncherSite/en/docs.html
 
 ---
 
@@ -282,7 +282,7 @@ You can enable or disable hotkey activation, change the key type, and adjust the
 To update, download the new version and overwrite the existing folder.  
 
 **Update steps:**
-1. Exit SimpleFolderLauncher  
+1. Exit WinSimpleFolderLauncher  
 2. Download the new ZIP file  
 3. Overwrite the existing folder  
 4. Launch the application  
